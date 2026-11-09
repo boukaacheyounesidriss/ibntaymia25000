@@ -10,33 +10,744 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TrustRouteImport } from './routes/trust'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardAbsenceReportRouteImport } from './routes/dashboard.absence-report'
+import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
+import { Route as DashboardAppearanceRouteImport } from './routes/dashboard.appearance'
+import { Route as DashboardAttendanceRouteImport } from './routes/dashboard.attendance'
+import { Route as DashboardBehaviorRouteImport } from './routes/dashboard.behavior'
+import { Route as DashboardCalendarRouteImport } from './routes/dashboard.calendar'
+import { Route as DashboardCardsRouteImport } from './routes/dashboard.cards'
+import { Route as DashboardConsoleRouteImport } from './routes/dashboard.console'
+import { Route as DashboardDataRouteImport } from './routes/dashboard.data'
+import { Route as DashboardDecisionsRouteImport } from './routes/dashboard.decisions'
+import { Route as DashboardDiagnosticsRouteImport } from './routes/dashboard.diagnostics'
+import { Route as DashboardDirectorRouteImport } from './routes/dashboard.director'
+import { Route as DashboardEntryPermitsRouteImport } from './routes/dashboard.entry-permits'
+import { Route as DashboardExamsRouteImport } from './routes/dashboard.exams'
+import { Route as DashboardFreePeriodsRouteImport } from './routes/dashboard.free-periods'
+import { Route as DashboardGateRouteImport } from './routes/dashboard.gate'
+import { Route as DashboardGateLogRouteImport } from './routes/dashboard.gate-log'
+import { Route as DashboardGuidanceRouteImport } from './routes/dashboard.guidance'
+import { Route as DashboardImportRouteImport } from './routes/dashboard.import'
+import { Route as DashboardInboxRouteImport } from './routes/dashboard.inbox'
+import { Route as DashboardLegalNoticesRouteImport } from './routes/dashboard.legal-notices'
+import { Route as DashboardLibraryRouteImport } from './routes/dashboard.library'
+import { Route as DashboardMeRouteImport } from './routes/dashboard.me'
+import { Route as DashboardMeetingsRouteImport } from './routes/dashboard.meetings'
+import { Route as DashboardMyAttendanceRouteImport } from './routes/dashboard.my-attendance'
+import { Route as DashboardNotificationsRouteImport } from './routes/dashboard.notifications'
+import { Route as DashboardOfflineRouteImport } from './routes/dashboard.offline'
+import { Route as DashboardParentRouteImport } from './routes/dashboard.parent'
+import { Route as DashboardPermissionsRouteImport } from './routes/dashboard.permissions'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
+import { Route as DashboardReportsRouteImport } from './routes/dashboard.reports'
+import { Route as DashboardScanRouteImport } from './routes/dashboard.scan'
+import { Route as DashboardScheduleRouteImport } from './routes/dashboard.schedule'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardSmsAlertRouteImport } from './routes/dashboard.sms-alert'
+import { Route as DashboardStudentRouteImport } from './routes/dashboard.student'
+import { Route as DashboardStudentsRouteImport } from './routes/dashboard.students'
+import { Route as DashboardSubstitutionsRouteImport } from './routes/dashboard.substitutions'
+import { Route as DashboardSupervisorRouteImport } from './routes/dashboard.supervisor'
+import { Route as DashboardTeacherRouteImport } from './routes/dashboard.teacher'
+import { Route as DashboardTodayRouteImport } from './routes/dashboard.today'
+import { Route as DashboardTripsRouteImport } from './routes/dashboard.trips'
+import { Route as DashboardUsersRouteImport } from './routes/dashboard.users'
+import { Route as DashboardWeeklyRouteImport } from './routes/dashboard.weekly'
+import { Route as ApiPublicCliRouteImport } from './routes/api/public/cli'
+import { Route as ApiPublicCliDemoRouteImport } from './routes/api/public/cli-demo'
+import { Route as ApiPublicTelegramDispatchRouteImport } from './routes/api/public/telegram-dispatch'
+import { Route as DashboardCardsPrintRouteImport } from './routes/dashboard.cards.print'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrustRoute = TrustRouteImport.update({
+  id: '/trust',
+  path: '/trust',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAbsenceReportRoute = DashboardAbsenceReportRouteImport.update({
+  id: '/absence-report',
+  path: '/absence-report',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAdminRoute = DashboardAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAppearanceRoute = DashboardAppearanceRouteImport.update({
+  id: '/appearance',
+  path: '/appearance',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAttendanceRoute = DashboardAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBehaviorRoute = DashboardBehaviorRouteImport.update({
+  id: '/behavior',
+  path: '/behavior',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCalendarRoute = DashboardCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCardsRoute = DashboardCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardConsoleRoute = DashboardConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDataRoute = DashboardDataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDecisionsRoute = DashboardDecisionsRouteImport.update({
+  id: '/decisions',
+  path: '/decisions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDiagnosticsRoute = DashboardDiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDirectorRoute = DashboardDirectorRouteImport.update({
+  id: '/director',
+  path: '/director',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardEntryPermitsRoute = DashboardEntryPermitsRouteImport.update({
+  id: '/entry-permits',
+  path: '/entry-permits',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardExamsRoute = DashboardExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardFreePeriodsRoute = DashboardFreePeriodsRouteImport.update({
+  id: '/free-periods',
+  path: '/free-periods',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardGateRoute = DashboardGateRouteImport.update({
+  id: '/gate',
+  path: '/gate',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardGateLogRoute = DashboardGateLogRouteImport.update({
+  id: '/gate-log',
+  path: '/gate-log',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardGuidanceRoute = DashboardGuidanceRouteImport.update({
+  id: '/guidance',
+  path: '/guidance',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardImportRoute = DashboardImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardInboxRoute = DashboardInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLegalNoticesRoute = DashboardLegalNoticesRouteImport.update({
+  id: '/legal-notices',
+  path: '/legal-notices',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLibraryRoute = DashboardLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMeRoute = DashboardMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMeetingsRoute = DashboardMeetingsRouteImport.update({
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMyAttendanceRoute = DashboardMyAttendanceRouteImport.update({
+  id: '/my-attendance',
+  path: '/my-attendance',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardOfflineRoute = DashboardOfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardParentRoute = DashboardParentRouteImport.update({
+  id: '/parent',
+  path: '/parent',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPermissionsRoute = DashboardPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardReportsRoute = DashboardReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardScanRoute = DashboardScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardScheduleRoute = DashboardScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSmsAlertRoute = DashboardSmsAlertRouteImport.update({
+  id: '/sms-alert',
+  path: '/sms-alert',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardStudentRoute = DashboardStudentRouteImport.update({
+  id: '/student',
+  path: '/student',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardStudentsRoute = DashboardStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSubstitutionsRoute = DashboardSubstitutionsRouteImport.update({
+  id: '/substitutions',
+  path: '/substitutions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSupervisorRoute = DashboardSupervisorRouteImport.update({
+  id: '/supervisor',
+  path: '/supervisor',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTeacherRoute = DashboardTeacherRouteImport.update({
+  id: '/teacher',
+  path: '/teacher',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTodayRoute = DashboardTodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTripsRoute = DashboardTripsRouteImport.update({
+  id: '/trips',
+  path: '/trips',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardUsersRoute = DashboardUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardWeeklyRoute = DashboardWeeklyRouteImport.update({
+  id: '/weekly',
+  path: '/weekly',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const ApiPublicCliRoute = ApiPublicCliRouteImport.update({
+  id: '/api/public/cli',
+  path: '/api/public/cli',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCliDemoRoute = ApiPublicCliDemoRouteImport.update({
+  id: '/api/public/cli-demo',
+  path: '/api/public/cli-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTelegramDispatchRoute =
+  ApiPublicTelegramDispatchRouteImport.update({
+    id: '/api/public/telegram-dispatch',
+    path: '/api/public/telegram-dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCardsPrintRoute = DashboardCardsPrintRouteImport.update({
+  id: '/print',
+  path: '/print',
+  getParentRoute: () => DashboardCardsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
+  '/trust': typeof TrustRoute
+  '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
+  '/dashboard/appearance': typeof DashboardAppearanceRoute
+  '/dashboard/attendance': typeof DashboardAttendanceRoute
+  '/dashboard/behavior': typeof DashboardBehaviorRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/console': typeof DashboardConsoleRoute
+  '/dashboard/data': typeof DashboardDataRoute
+  '/dashboard/decisions': typeof DashboardDecisionsRoute
+  '/dashboard/diagnostics': typeof DashboardDiagnosticsRoute
+  '/dashboard/director': typeof DashboardDirectorRoute
+  '/dashboard/entry-permits': typeof DashboardEntryPermitsRoute
+  '/dashboard/exams': typeof DashboardExamsRoute
+  '/dashboard/free-periods': typeof DashboardFreePeriodsRoute
+  '/dashboard/gate': typeof DashboardGateRoute
+  '/dashboard/gate-log': typeof DashboardGateLogRoute
+  '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/import': typeof DashboardImportRoute
+  '/dashboard/inbox': typeof DashboardInboxRoute
+  '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
+  '/dashboard/library': typeof DashboardLibraryRoute
+  '/dashboard/me': typeof DashboardMeRoute
+  '/dashboard/meetings': typeof DashboardMeetingsRoute
+  '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/offline': typeof DashboardOfflineRoute
+  '/dashboard/parent': typeof DashboardParentRoute
+  '/dashboard/permissions': typeof DashboardPermissionsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/scan': typeof DashboardScanRoute
+  '/dashboard/schedule': typeof DashboardScheduleRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sms-alert': typeof DashboardSmsAlertRoute
+  '/dashboard/student': typeof DashboardStudentRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
+  '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
+  '/dashboard/supervisor': typeof DashboardSupervisorRoute
+  '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/today': typeof DashboardTodayRoute
+  '/dashboard/trips': typeof DashboardTripsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard/weekly': typeof DashboardWeeklyRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cli': typeof ApiPublicCliRoute
+  '/api/public/cli-demo': typeof ApiPublicCliDemoRoute
+  '/api/public/telegram-dispatch': typeof ApiPublicTelegramDispatchRoute
+  '/dashboard/cards/print': typeof DashboardCardsPrintRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
+  '/trust': typeof TrustRoute
+  '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
+  '/dashboard/appearance': typeof DashboardAppearanceRoute
+  '/dashboard/attendance': typeof DashboardAttendanceRoute
+  '/dashboard/behavior': typeof DashboardBehaviorRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/console': typeof DashboardConsoleRoute
+  '/dashboard/data': typeof DashboardDataRoute
+  '/dashboard/decisions': typeof DashboardDecisionsRoute
+  '/dashboard/diagnostics': typeof DashboardDiagnosticsRoute
+  '/dashboard/director': typeof DashboardDirectorRoute
+  '/dashboard/entry-permits': typeof DashboardEntryPermitsRoute
+  '/dashboard/exams': typeof DashboardExamsRoute
+  '/dashboard/free-periods': typeof DashboardFreePeriodsRoute
+  '/dashboard/gate': typeof DashboardGateRoute
+  '/dashboard/gate-log': typeof DashboardGateLogRoute
+  '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/import': typeof DashboardImportRoute
+  '/dashboard/inbox': typeof DashboardInboxRoute
+  '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
+  '/dashboard/library': typeof DashboardLibraryRoute
+  '/dashboard/me': typeof DashboardMeRoute
+  '/dashboard/meetings': typeof DashboardMeetingsRoute
+  '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/offline': typeof DashboardOfflineRoute
+  '/dashboard/parent': typeof DashboardParentRoute
+  '/dashboard/permissions': typeof DashboardPermissionsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/scan': typeof DashboardScanRoute
+  '/dashboard/schedule': typeof DashboardScheduleRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sms-alert': typeof DashboardSmsAlertRoute
+  '/dashboard/student': typeof DashboardStudentRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
+  '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
+  '/dashboard/supervisor': typeof DashboardSupervisorRoute
+  '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/today': typeof DashboardTodayRoute
+  '/dashboard/trips': typeof DashboardTripsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard/weekly': typeof DashboardWeeklyRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/api/public/cli': typeof ApiPublicCliRoute
+  '/api/public/cli-demo': typeof ApiPublicCliDemoRoute
+  '/api/public/telegram-dispatch': typeof ApiPublicTelegramDispatchRoute
+  '/dashboard/cards/print': typeof DashboardCardsPrintRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
+  '/trust': typeof TrustRoute
+  '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
+  '/dashboard/appearance': typeof DashboardAppearanceRoute
+  '/dashboard/attendance': typeof DashboardAttendanceRoute
+  '/dashboard/behavior': typeof DashboardBehaviorRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/console': typeof DashboardConsoleRoute
+  '/dashboard/data': typeof DashboardDataRoute
+  '/dashboard/decisions': typeof DashboardDecisionsRoute
+  '/dashboard/diagnostics': typeof DashboardDiagnosticsRoute
+  '/dashboard/director': typeof DashboardDirectorRoute
+  '/dashboard/entry-permits': typeof DashboardEntryPermitsRoute
+  '/dashboard/exams': typeof DashboardExamsRoute
+  '/dashboard/free-periods': typeof DashboardFreePeriodsRoute
+  '/dashboard/gate': typeof DashboardGateRoute
+  '/dashboard/gate-log': typeof DashboardGateLogRoute
+  '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/import': typeof DashboardImportRoute
+  '/dashboard/inbox': typeof DashboardInboxRoute
+  '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
+  '/dashboard/library': typeof DashboardLibraryRoute
+  '/dashboard/me': typeof DashboardMeRoute
+  '/dashboard/meetings': typeof DashboardMeetingsRoute
+  '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/offline': typeof DashboardOfflineRoute
+  '/dashboard/parent': typeof DashboardParentRoute
+  '/dashboard/permissions': typeof DashboardPermissionsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/scan': typeof DashboardScanRoute
+  '/dashboard/schedule': typeof DashboardScheduleRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sms-alert': typeof DashboardSmsAlertRoute
+  '/dashboard/student': typeof DashboardStudentRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
+  '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
+  '/dashboard/supervisor': typeof DashboardSupervisorRoute
+  '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/today': typeof DashboardTodayRoute
+  '/dashboard/trips': typeof DashboardTripsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard/weekly': typeof DashboardWeeklyRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cli': typeof ApiPublicCliRoute
+  '/api/public/cli-demo': typeof ApiPublicCliDemoRoute
+  '/api/public/telegram-dispatch': typeof ApiPublicTelegramDispatchRoute
+  '/dashboard/cards/print': typeof DashboardCardsPrintRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/privacy'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/trust'
+    | '/dashboard/absence-report'
+    | '/dashboard/admin'
+    | '/dashboard/appearance'
+    | '/dashboard/attendance'
+    | '/dashboard/behavior'
+    | '/dashboard/calendar'
+    | '/dashboard/cards'
+    | '/dashboard/console'
+    | '/dashboard/data'
+    | '/dashboard/decisions'
+    | '/dashboard/diagnostics'
+    | '/dashboard/director'
+    | '/dashboard/entry-permits'
+    | '/dashboard/exams'
+    | '/dashboard/free-periods'
+    | '/dashboard/gate'
+    | '/dashboard/gate-log'
+    | '/dashboard/guidance'
+    | '/dashboard/import'
+    | '/dashboard/inbox'
+    | '/dashboard/legal-notices'
+    | '/dashboard/library'
+    | '/dashboard/me'
+    | '/dashboard/meetings'
+    | '/dashboard/my-attendance'
+    | '/dashboard/notifications'
+    | '/dashboard/offline'
+    | '/dashboard/parent'
+    | '/dashboard/permissions'
+    | '/dashboard/profile'
+    | '/dashboard/reports'
+    | '/dashboard/scan'
+    | '/dashboard/schedule'
+    | '/dashboard/settings'
+    | '/dashboard/sms-alert'
+    | '/dashboard/student'
+    | '/dashboard/students'
+    | '/dashboard/substitutions'
+    | '/dashboard/supervisor'
+    | '/dashboard/teacher'
+    | '/dashboard/today'
+    | '/dashboard/trips'
+    | '/dashboard/users'
+    | '/dashboard/weekly'
+    | '/dashboard/'
+    | '/api/public/cli'
+    | '/api/public/cli-demo'
+    | '/api/public/telegram-dispatch'
+    | '/dashboard/cards/print'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/forgot-password'
+    | '/login'
+    | '/privacy'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/trust'
+    | '/dashboard/absence-report'
+    | '/dashboard/admin'
+    | '/dashboard/appearance'
+    | '/dashboard/attendance'
+    | '/dashboard/behavior'
+    | '/dashboard/calendar'
+    | '/dashboard/cards'
+    | '/dashboard/console'
+    | '/dashboard/data'
+    | '/dashboard/decisions'
+    | '/dashboard/diagnostics'
+    | '/dashboard/director'
+    | '/dashboard/entry-permits'
+    | '/dashboard/exams'
+    | '/dashboard/free-periods'
+    | '/dashboard/gate'
+    | '/dashboard/gate-log'
+    | '/dashboard/guidance'
+    | '/dashboard/import'
+    | '/dashboard/inbox'
+    | '/dashboard/legal-notices'
+    | '/dashboard/library'
+    | '/dashboard/me'
+    | '/dashboard/meetings'
+    | '/dashboard/my-attendance'
+    | '/dashboard/notifications'
+    | '/dashboard/offline'
+    | '/dashboard/parent'
+    | '/dashboard/permissions'
+    | '/dashboard/profile'
+    | '/dashboard/reports'
+    | '/dashboard/scan'
+    | '/dashboard/schedule'
+    | '/dashboard/settings'
+    | '/dashboard/sms-alert'
+    | '/dashboard/student'
+    | '/dashboard/students'
+    | '/dashboard/substitutions'
+    | '/dashboard/supervisor'
+    | '/dashboard/teacher'
+    | '/dashboard/today'
+    | '/dashboard/trips'
+    | '/dashboard/users'
+    | '/dashboard/weekly'
+    | '/dashboard'
+    | '/api/public/cli'
+    | '/api/public/cli-demo'
+    | '/api/public/telegram-dispatch'
+    | '/dashboard/cards/print'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/privacy'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/trust'
+    | '/dashboard/absence-report'
+    | '/dashboard/admin'
+    | '/dashboard/appearance'
+    | '/dashboard/attendance'
+    | '/dashboard/behavior'
+    | '/dashboard/calendar'
+    | '/dashboard/cards'
+    | '/dashboard/console'
+    | '/dashboard/data'
+    | '/dashboard/decisions'
+    | '/dashboard/diagnostics'
+    | '/dashboard/director'
+    | '/dashboard/entry-permits'
+    | '/dashboard/exams'
+    | '/dashboard/free-periods'
+    | '/dashboard/gate'
+    | '/dashboard/gate-log'
+    | '/dashboard/guidance'
+    | '/dashboard/import'
+    | '/dashboard/inbox'
+    | '/dashboard/legal-notices'
+    | '/dashboard/library'
+    | '/dashboard/me'
+    | '/dashboard/meetings'
+    | '/dashboard/my-attendance'
+    | '/dashboard/notifications'
+    | '/dashboard/offline'
+    | '/dashboard/parent'
+    | '/dashboard/permissions'
+    | '/dashboard/profile'
+    | '/dashboard/reports'
+    | '/dashboard/scan'
+    | '/dashboard/schedule'
+    | '/dashboard/settings'
+    | '/dashboard/sms-alert'
+    | '/dashboard/student'
+    | '/dashboard/students'
+    | '/dashboard/substitutions'
+    | '/dashboard/supervisor'
+    | '/dashboard/teacher'
+    | '/dashboard/today'
+    | '/dashboard/trips'
+    | '/dashboard/users'
+    | '/dashboard/weekly'
+    | '/dashboard/'
+    | '/api/public/cli'
+    | '/api/public/cli-demo'
+    | '/api/public/telegram-dispatch'
+    | '/dashboard/cards/print'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
+  TrustRoute: typeof TrustRoute
+  ApiPublicCliRoute: typeof ApiPublicCliRoute
+  ApiPublicCliDemoRoute: typeof ApiPublicCliDemoRoute
+  ApiPublicTelegramDispatchRoute: typeof ApiPublicTelegramDispatchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +759,541 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trust': {
+      id: '/trust'
+      path: '/trust'
+      fullPath: '/trust'
+      preLoaderRoute: typeof TrustRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/absence-report': {
+      id: '/dashboard/absence-report'
+      path: '/absence-report'
+      fullPath: '/dashboard/absence-report'
+      preLoaderRoute: typeof DashboardAbsenceReportRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/admin': {
+      id: '/dashboard/admin'
+      path: '/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof DashboardAdminRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/appearance': {
+      id: '/dashboard/appearance'
+      path: '/appearance'
+      fullPath: '/dashboard/appearance'
+      preLoaderRoute: typeof DashboardAppearanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/attendance': {
+      id: '/dashboard/attendance'
+      path: '/attendance'
+      fullPath: '/dashboard/attendance'
+      preLoaderRoute: typeof DashboardAttendanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/behavior': {
+      id: '/dashboard/behavior'
+      path: '/behavior'
+      fullPath: '/dashboard/behavior'
+      preLoaderRoute: typeof DashboardBehaviorRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/calendar': {
+      id: '/dashboard/calendar'
+      path: '/calendar'
+      fullPath: '/dashboard/calendar'
+      preLoaderRoute: typeof DashboardCalendarRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/cards': {
+      id: '/dashboard/cards'
+      path: '/cards'
+      fullPath: '/dashboard/cards'
+      preLoaderRoute: typeof DashboardCardsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/console': {
+      id: '/dashboard/console'
+      path: '/console'
+      fullPath: '/dashboard/console'
+      preLoaderRoute: typeof DashboardConsoleRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/data': {
+      id: '/dashboard/data'
+      path: '/data'
+      fullPath: '/dashboard/data'
+      preLoaderRoute: typeof DashboardDataRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/decisions': {
+      id: '/dashboard/decisions'
+      path: '/decisions'
+      fullPath: '/dashboard/decisions'
+      preLoaderRoute: typeof DashboardDecisionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/diagnostics': {
+      id: '/dashboard/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/dashboard/diagnostics'
+      preLoaderRoute: typeof DashboardDiagnosticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/director': {
+      id: '/dashboard/director'
+      path: '/director'
+      fullPath: '/dashboard/director'
+      preLoaderRoute: typeof DashboardDirectorRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/entry-permits': {
+      id: '/dashboard/entry-permits'
+      path: '/entry-permits'
+      fullPath: '/dashboard/entry-permits'
+      preLoaderRoute: typeof DashboardEntryPermitsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/exams': {
+      id: '/dashboard/exams'
+      path: '/exams'
+      fullPath: '/dashboard/exams'
+      preLoaderRoute: typeof DashboardExamsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/free-periods': {
+      id: '/dashboard/free-periods'
+      path: '/free-periods'
+      fullPath: '/dashboard/free-periods'
+      preLoaderRoute: typeof DashboardFreePeriodsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/gate': {
+      id: '/dashboard/gate'
+      path: '/gate'
+      fullPath: '/dashboard/gate'
+      preLoaderRoute: typeof DashboardGateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/gate-log': {
+      id: '/dashboard/gate-log'
+      path: '/gate-log'
+      fullPath: '/dashboard/gate-log'
+      preLoaderRoute: typeof DashboardGateLogRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/guidance': {
+      id: '/dashboard/guidance'
+      path: '/guidance'
+      fullPath: '/dashboard/guidance'
+      preLoaderRoute: typeof DashboardGuidanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/import': {
+      id: '/dashboard/import'
+      path: '/import'
+      fullPath: '/dashboard/import'
+      preLoaderRoute: typeof DashboardImportRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/inbox': {
+      id: '/dashboard/inbox'
+      path: '/inbox'
+      fullPath: '/dashboard/inbox'
+      preLoaderRoute: typeof DashboardInboxRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/legal-notices': {
+      id: '/dashboard/legal-notices'
+      path: '/legal-notices'
+      fullPath: '/dashboard/legal-notices'
+      preLoaderRoute: typeof DashboardLegalNoticesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/library': {
+      id: '/dashboard/library'
+      path: '/library'
+      fullPath: '/dashboard/library'
+      preLoaderRoute: typeof DashboardLibraryRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/me': {
+      id: '/dashboard/me'
+      path: '/me'
+      fullPath: '/dashboard/me'
+      preLoaderRoute: typeof DashboardMeRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/meetings': {
+      id: '/dashboard/meetings'
+      path: '/meetings'
+      fullPath: '/dashboard/meetings'
+      preLoaderRoute: typeof DashboardMeetingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/my-attendance': {
+      id: '/dashboard/my-attendance'
+      path: '/my-attendance'
+      fullPath: '/dashboard/my-attendance'
+      preLoaderRoute: typeof DashboardMyAttendanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/notifications': {
+      id: '/dashboard/notifications'
+      path: '/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/offline': {
+      id: '/dashboard/offline'
+      path: '/offline'
+      fullPath: '/dashboard/offline'
+      preLoaderRoute: typeof DashboardOfflineRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/parent': {
+      id: '/dashboard/parent'
+      path: '/parent'
+      fullPath: '/dashboard/parent'
+      preLoaderRoute: typeof DashboardParentRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/permissions': {
+      id: '/dashboard/permissions'
+      path: '/permissions'
+      fullPath: '/dashboard/permissions'
+      preLoaderRoute: typeof DashboardPermissionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/reports': {
+      id: '/dashboard/reports'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof DashboardReportsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/scan': {
+      id: '/dashboard/scan'
+      path: '/scan'
+      fullPath: '/dashboard/scan'
+      preLoaderRoute: typeof DashboardScanRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/schedule': {
+      id: '/dashboard/schedule'
+      path: '/schedule'
+      fullPath: '/dashboard/schedule'
+      preLoaderRoute: typeof DashboardScheduleRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/sms-alert': {
+      id: '/dashboard/sms-alert'
+      path: '/sms-alert'
+      fullPath: '/dashboard/sms-alert'
+      preLoaderRoute: typeof DashboardSmsAlertRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/student': {
+      id: '/dashboard/student'
+      path: '/student'
+      fullPath: '/dashboard/student'
+      preLoaderRoute: typeof DashboardStudentRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/students': {
+      id: '/dashboard/students'
+      path: '/students'
+      fullPath: '/dashboard/students'
+      preLoaderRoute: typeof DashboardStudentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/substitutions': {
+      id: '/dashboard/substitutions'
+      path: '/substitutions'
+      fullPath: '/dashboard/substitutions'
+      preLoaderRoute: typeof DashboardSubstitutionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/supervisor': {
+      id: '/dashboard/supervisor'
+      path: '/supervisor'
+      fullPath: '/dashboard/supervisor'
+      preLoaderRoute: typeof DashboardSupervisorRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/teacher': {
+      id: '/dashboard/teacher'
+      path: '/teacher'
+      fullPath: '/dashboard/teacher'
+      preLoaderRoute: typeof DashboardTeacherRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/today': {
+      id: '/dashboard/today'
+      path: '/today'
+      fullPath: '/dashboard/today'
+      preLoaderRoute: typeof DashboardTodayRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/trips': {
+      id: '/dashboard/trips'
+      path: '/trips'
+      fullPath: '/dashboard/trips'
+      preLoaderRoute: typeof DashboardTripsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/users': {
+      id: '/dashboard/users'
+      path: '/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/weekly': {
+      id: '/dashboard/weekly'
+      path: '/weekly'
+      fullPath: '/dashboard/weekly'
+      preLoaderRoute: typeof DashboardWeeklyRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/api/public/cli': {
+      id: '/api/public/cli'
+      path: '/api/public/cli'
+      fullPath: '/api/public/cli'
+      preLoaderRoute: typeof ApiPublicCliRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cli-demo': {
+      id: '/api/public/cli-demo'
+      path: '/api/public/cli-demo'
+      fullPath: '/api/public/cli-demo'
+      preLoaderRoute: typeof ApiPublicCliDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram-dispatch': {
+      id: '/api/public/telegram-dispatch'
+      path: '/api/public/telegram-dispatch'
+      fullPath: '/api/public/telegram-dispatch'
+      preLoaderRoute: typeof ApiPublicTelegramDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/cards/print': {
+      id: '/dashboard/cards/print'
+      path: '/print'
+      fullPath: '/dashboard/cards/print'
+      preLoaderRoute: typeof DashboardCardsPrintRouteImport
+      parentRoute: typeof DashboardCardsRoute
+    }
   }
 }
 
+interface DashboardCardsRouteChildren {
+  DashboardCardsPrintRoute: typeof DashboardCardsPrintRoute
+}
+
+const DashboardCardsRouteChildren: DashboardCardsRouteChildren = {
+  DashboardCardsPrintRoute: DashboardCardsPrintRoute,
+}
+
+const DashboardCardsRouteWithChildren = DashboardCardsRoute._addFileChildren(
+  DashboardCardsRouteChildren,
+)
+
+interface DashboardRouteChildren {
+  DashboardAbsenceReportRoute: typeof DashboardAbsenceReportRoute
+  DashboardAdminRoute: typeof DashboardAdminRoute
+  DashboardAppearanceRoute: typeof DashboardAppearanceRoute
+  DashboardAttendanceRoute: typeof DashboardAttendanceRoute
+  DashboardBehaviorRoute: typeof DashboardBehaviorRoute
+  DashboardCalendarRoute: typeof DashboardCalendarRoute
+  DashboardCardsRoute: typeof DashboardCardsRouteWithChildren
+  DashboardConsoleRoute: typeof DashboardConsoleRoute
+  DashboardDataRoute: typeof DashboardDataRoute
+  DashboardDecisionsRoute: typeof DashboardDecisionsRoute
+  DashboardDiagnosticsRoute: typeof DashboardDiagnosticsRoute
+  DashboardDirectorRoute: typeof DashboardDirectorRoute
+  DashboardEntryPermitsRoute: typeof DashboardEntryPermitsRoute
+  DashboardExamsRoute: typeof DashboardExamsRoute
+  DashboardFreePeriodsRoute: typeof DashboardFreePeriodsRoute
+  DashboardGateRoute: typeof DashboardGateRoute
+  DashboardGateLogRoute: typeof DashboardGateLogRoute
+  DashboardGuidanceRoute: typeof DashboardGuidanceRoute
+  DashboardImportRoute: typeof DashboardImportRoute
+  DashboardInboxRoute: typeof DashboardInboxRoute
+  DashboardLegalNoticesRoute: typeof DashboardLegalNoticesRoute
+  DashboardLibraryRoute: typeof DashboardLibraryRoute
+  DashboardMeRoute: typeof DashboardMeRoute
+  DashboardMeetingsRoute: typeof DashboardMeetingsRoute
+  DashboardMyAttendanceRoute: typeof DashboardMyAttendanceRoute
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardOfflineRoute: typeof DashboardOfflineRoute
+  DashboardParentRoute: typeof DashboardParentRoute
+  DashboardPermissionsRoute: typeof DashboardPermissionsRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardReportsRoute: typeof DashboardReportsRoute
+  DashboardScanRoute: typeof DashboardScanRoute
+  DashboardScheduleRoute: typeof DashboardScheduleRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardSmsAlertRoute: typeof DashboardSmsAlertRoute
+  DashboardStudentRoute: typeof DashboardStudentRoute
+  DashboardStudentsRoute: typeof DashboardStudentsRoute
+  DashboardSubstitutionsRoute: typeof DashboardSubstitutionsRoute
+  DashboardSupervisorRoute: typeof DashboardSupervisorRoute
+  DashboardTeacherRoute: typeof DashboardTeacherRoute
+  DashboardTodayRoute: typeof DashboardTodayRoute
+  DashboardTripsRoute: typeof DashboardTripsRoute
+  DashboardUsersRoute: typeof DashboardUsersRoute
+  DashboardWeeklyRoute: typeof DashboardWeeklyRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAbsenceReportRoute: DashboardAbsenceReportRoute,
+  DashboardAdminRoute: DashboardAdminRoute,
+  DashboardAppearanceRoute: DashboardAppearanceRoute,
+  DashboardAttendanceRoute: DashboardAttendanceRoute,
+  DashboardBehaviorRoute: DashboardBehaviorRoute,
+  DashboardCalendarRoute: DashboardCalendarRoute,
+  DashboardCardsRoute: DashboardCardsRouteWithChildren,
+  DashboardConsoleRoute: DashboardConsoleRoute,
+  DashboardDataRoute: DashboardDataRoute,
+  DashboardDecisionsRoute: DashboardDecisionsRoute,
+  DashboardDiagnosticsRoute: DashboardDiagnosticsRoute,
+  DashboardDirectorRoute: DashboardDirectorRoute,
+  DashboardEntryPermitsRoute: DashboardEntryPermitsRoute,
+  DashboardExamsRoute: DashboardExamsRoute,
+  DashboardFreePeriodsRoute: DashboardFreePeriodsRoute,
+  DashboardGateRoute: DashboardGateRoute,
+  DashboardGateLogRoute: DashboardGateLogRoute,
+  DashboardGuidanceRoute: DashboardGuidanceRoute,
+  DashboardImportRoute: DashboardImportRoute,
+  DashboardInboxRoute: DashboardInboxRoute,
+  DashboardLegalNoticesRoute: DashboardLegalNoticesRoute,
+  DashboardLibraryRoute: DashboardLibraryRoute,
+  DashboardMeRoute: DashboardMeRoute,
+  DashboardMeetingsRoute: DashboardMeetingsRoute,
+  DashboardMyAttendanceRoute: DashboardMyAttendanceRoute,
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardOfflineRoute: DashboardOfflineRoute,
+  DashboardParentRoute: DashboardParentRoute,
+  DashboardPermissionsRoute: DashboardPermissionsRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
+  DashboardReportsRoute: DashboardReportsRoute,
+  DashboardScanRoute: DashboardScanRoute,
+  DashboardScheduleRoute: DashboardScheduleRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardSmsAlertRoute: DashboardSmsAlertRoute,
+  DashboardStudentRoute: DashboardStudentRoute,
+  DashboardStudentsRoute: DashboardStudentsRoute,
+  DashboardSubstitutionsRoute: DashboardSubstitutionsRoute,
+  DashboardSupervisorRoute: DashboardSupervisorRoute,
+  DashboardTeacherRoute: DashboardTeacherRoute,
+  DashboardTodayRoute: DashboardTodayRoute,
+  DashboardTripsRoute: DashboardTripsRoute,
+  DashboardUsersRoute: DashboardUsersRoute,
+  DashboardWeeklyRoute: DashboardWeeklyRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
+  TrustRoute: TrustRoute,
+  ApiPublicCliRoute: ApiPublicCliRoute,
+  ApiPublicCliDemoRoute: ApiPublicCliDemoRoute,
+  ApiPublicTelegramDispatchRoute: ApiPublicTelegramDispatchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

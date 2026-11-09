@@ -3,14 +3,22 @@ import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
-  // One client per request: a module-level QueryClient leaks cached data between SSR requests.
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Cache for 5 min — avoid refetching on every navigation
+        staleTime: 5 * 60 * 1000,
+        gcTime: 30 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+      },
+    },
+  });
 
   const router = createRouter({
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
-    // Lets Query own freshness; set caching defaults on the QueryClient, not the router.
     defaultPreloadStaleTime: 0,
   });
 
