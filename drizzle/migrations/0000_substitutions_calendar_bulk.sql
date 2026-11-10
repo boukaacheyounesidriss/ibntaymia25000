@@ -1,7 +1,7 @@
 -- Base schema consolidated from the original project's latest full schema snapshot and later changes (fresh database).
 -- >>> 20260924171244_4ef2f925-a88a-43e4-a3f8-3ef898c38502.sql
 -- Roles enum
-CREATE TYPE public.app_role AS ENUM ('admin', 'director', 'supervisor', 'teacher', 'parent', 'student', 'gate_monitor');
+CREATE TYPE public.app_role AS ENUM ('admin', 'director', 'supervisor', 'teacher', 'parent', 'student', 'gate_monitor', 'developer', 'class_rep', 'class_rep_deputy');
 
 -- Profiles table
 CREATE TABLE public.profiles (
