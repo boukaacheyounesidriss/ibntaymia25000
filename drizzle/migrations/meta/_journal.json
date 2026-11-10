@@ -120,6 +120,13 @@
       "when": 1794149528786,
       "tag": "0016_kiosk_pin_attendance",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794311895781,
+      "tag": "0017_idarom_schema_marker",
+      "breakpoints": true
     }
   ]
 }
