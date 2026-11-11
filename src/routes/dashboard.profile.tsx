@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { PageHeader } from "@/components/PageHeader";
 import { HandDrawnStar } from "@/components/HandDrawnStar";
+import { TeacherPinCard } from "@/components/TeacherPinCard";
 
 export const Route = createFileRoute("/dashboard/profile")({
   head: () => ({
@@ -517,6 +518,8 @@ function ProfilePage() {
           </form>
         </CardContent>
       </Card>
+
+      {roles.includes("teacher") && <TeacherPinCard />}
 
       <Card>
         <CardHeader>

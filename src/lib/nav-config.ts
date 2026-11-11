@@ -11,7 +11,7 @@ export const NAV_ITEMS: NavItem[] = [
   { url: "/dashboard", labelKey: "nav.dashboard" },
   { url: "/dashboard/inbox", labelKey: "nav.inbox" },
   { url: "/dashboard/scan", labelKey: "nav.quick_scan", roles: ["admin", "director", "supervisor", "teacher", "gate_monitor"] },
-  { url: "/dashboard/kiosk", labelKey: "nav.class_kiosk", roles: ["class_rep", "class_rep_deputy"] },
+  { url: "/dashboard/class-rep-attendance", labelKey: "nav.class_kiosk", roles: ["class_rep", "class_rep_deputy"] },
   { url: "/dashboard/class-reps", labelKey: "nav.class_reps", roles: ["admin", "director", "supervisor"] },
   { url: "/dashboard/my-attendance", labelKey: "nav.my_attendance", roles: ["parent", "student"] },
   { url: "/dashboard/today", labelKey: "nav.today", roles: ["teacher"] },
@@ -220,7 +220,7 @@ export function defaultLandingFor(userRoles: AppRole[]): string {
       return "/dashboard/gate";
     case "class_rep":
     case "class_rep_deputy":
-      return "/dashboard/kiosk";
+      return "/dashboard/class-rep-attendance";
     case "parent":
       return "/dashboard/parent";
     case "student":
