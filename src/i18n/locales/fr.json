@@ -48,7 +48,8 @@
     "legal_notices": "Avis d'absence",
     "free_periods": "Heures libres",
     "class_kiosk": "Présence de la classe",
-    "class_reps": "Responsables de classe"
+    "class_reps": "Responsables de classe",
+    "parent_phones": "Téléphones des parents"
   },
   "landing": {
     "hero_title": "Une gestion scolaire intelligente, sécurisée, qui fonctionne hors ligne",

@@ -12,6 +12,7 @@ export const NAV_ITEMS: NavItem[] = [
   { url: "/dashboard/inbox", labelKey: "nav.inbox" },
   { url: "/dashboard/scan", labelKey: "nav.quick_scan", roles: ["admin", "director", "supervisor", "teacher", "gate_monitor"] },
   { url: "/dashboard/class-rep-attendance", labelKey: "nav.class_kiosk", roles: ["class_rep", "class_rep_deputy"] },
+  { url: "/dashboard/parent-phones", labelKey: "nav.parent_phones", roles: ["admin", "director", "supervisor"] },
   { url: "/dashboard/class-reps", labelKey: "nav.class_reps", roles: ["admin", "director", "supervisor"] },
   { url: "/dashboard/my-attendance", labelKey: "nav.my_attendance", roles: ["parent", "student"] },
   { url: "/dashboard/today", labelKey: "nav.today", roles: ["teacher"] },
