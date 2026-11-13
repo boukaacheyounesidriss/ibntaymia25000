@@ -116,7 +116,7 @@ function ParentPhonesPage() {
   const doneCount = students.filter((s) => s.father_phone || s.mother_phone).length;
 
   return (
-    <div dir="rtl" className="mx-auto max-w-md space-y-3 p-3 pb-28">
+    <div dir="rtl" className="mx-auto max-w-md space-y-3 p-3 pb-24">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => setClassId("")}><ChevronRight className="size-4" /> الأقسام</Button>
         <span className="text-sm text-muted-foreground">{className} · {doneCount}/{students.length}</span>
@@ -140,6 +140,14 @@ function ParentPhonesPage() {
               onChange={(e) => setMother(e.target.value)} className="h-12 text-center text-lg tracking-wider"
               enterKeyHint="done" onKeyDown={(e) => { if (e.key === "Enter") save(true); }} />
           </label>
+          <div className="flex gap-2">
+            <Button variant="outline" className="h-12 flex-1" disabled={idx === 0 || saving} onClick={async () => { await save(false); setIdx(idx - 1); }}>
+              <ChevronRight className="size-5" /> السابق
+            </Button>
+            <Button className="h-12 flex-[2]" disabled={saving} onClick={() => save(true)}>
+              حفظ والتالي <ChevronLeft className="size-5" />
+            </Button>
+          </div>
         </div>
       )}
 
@@ -157,16 +165,6 @@ function ParentPhonesPage() {
         ))}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 p-3 backdrop-blur">
-        <div className="mx-auto flex max-w-md gap-2">
-          <Button variant="outline" className="h-12 flex-1" disabled={idx === 0 || saving} onClick={async () => { await save(false); setIdx(idx - 1); }}>
-            <ChevronRight className="size-5" /> السابق
-          </Button>
-          <Button className="h-12 flex-[2]" disabled={saving} onClick={() => save(true)}>
-            حفظ والتالي <ChevronLeft className="size-5" />
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
