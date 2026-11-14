@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DATA_TABLES } from "@/lib/data-explorer";
+import { guardStudentValues } from "@/lib/data-guards";
 
 const tableNames = DATA_TABLES.map((t) => t.name) as [string, ...string[]];
 const tableSchema = z.enum(tableNames);
@@ -61,6 +62,7 @@ export const saveRow = createServerFn({ method: "POST" })
     const t = meta(data.table);
     if (t.readOnly) throw new Error("هذا الجدول للقراءة فقط");
     const values = { ...data.values };
+    if (t.name === "students") guardStudentValues(values, Boolean(data.id));
     for (const k of ["created_at", "updated_at"]) delete values[k];
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const tbl = (supabaseAdmin.from as any)(t.name);

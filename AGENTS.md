@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Raw data editors must exclude enrollment decision fields and enforce the same restriction server-side; the dedicated legal workflow owns strike-off decisions.
+- Settings groups existing administration pages and offers a browser data export through the authorized backup function; hosted credentials and auth passwords are never included.

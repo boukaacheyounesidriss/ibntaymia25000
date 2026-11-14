@@ -14,6 +14,7 @@ import { InstitutionSettings } from "@/components/InstitutionSettings";
 import { DesktopKitPanel } from "@/components/DesktopKit";
 import { Switch } from "@/components/ui/switch";
 import { setSimpleMode, useSimpleMode } from "@/lib/simple-mode";
+import { AdminControls } from "@/components/AdminControls";
 
 function SimpleModeCard() {
   const on = useSimpleMode();
@@ -105,6 +106,7 @@ function SettingsPage() {
       <UpdateProgressDialog open={applying} progress={progress} remote={remote} />
       <PageHeader title="الإعدادات" description="معلومات التطبيق وإدارة التخزين المؤقت." />
       <SimpleModeCard />
+      <AdminControls />
       <InstitutionSettings />
       <DesktopKitPanel />
 

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { accountIsDisabled } from "@/lib/account-status";
 
 /**
  * Account & role administration.
@@ -85,7 +86,7 @@ export const listAccounts = createServerFn({ method: "POST" })
           email: u.email ?? null,
           createdAt: u.created_at,
           lastSignInAt: u.last_sign_in_at ?? null,
-          disabled: Boolean((u as { banned_until?: string | null }).banned_until),
+          disabled: accountIsDisabled((u as { banned_until?: string | null }).banned_until),
         });
       }
       if (data.users.length < 200) break;
@@ -245,13 +246,13 @@ function makeTempPassword() {
   const all = upper + lower + digits + symbols;
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
-  const pick = (set: string, i: number) => set[bytes[i]! % set.length]!;
+  const pick = (set: string, i: number) => set[(bytes[i] ?? 0) % set.length] ?? "";
   const chars = [pick(upper, 0), pick(lower, 1), pick(digits, 2), pick(symbols, 3)];
   for (let i = 4; i < bytes.length; i++) chars.push(pick(all, i));
   // shuffle
   for (let i = chars.length - 1; i > 0; i--) {
-    const j = bytes[i]! % (i + 1);
-    [chars[i], chars[j]] = [chars[j]!, chars[i]!];
+    const j = (bytes[i] ?? 0) % (i + 1);
+    [chars[i], chars[j]] = [chars[j] ?? "", chars[i] ?? ""];
   }
   return chars.join("");
 }

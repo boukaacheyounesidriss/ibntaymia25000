@@ -62,7 +62,7 @@ function fmt(v: unknown) {
 }
 
 function TableView({ table }: { table: string }) {
-  const meta = DATA_TABLES.find((t) => t.name === table)!;
+  const meta = DATA_TABLES.find((t) => t.name === table);
   const [search, setSearch] = useState("");
   const [q, setQ] = useState("");
   const [page, setPage] = useState(0);
@@ -76,6 +76,7 @@ function TableView({ table }: { table: string }) {
   });
   const rows = data?.rows ?? [];
   const cols = rows[0] ? Object.keys(rows[0]) : [];
+  if (!meta) return <p>جدول غير معروف.</p>;
 
   async function remove(id: string) {
     if (!confirm("حذف هذا السجل نهائياً؟")) return;
@@ -181,11 +182,11 @@ function ExtraFieldsEditor({ value, onChange }: { value: [string, string][]; onC
 function RowEditor({ table, row, columns, onClose, onSaved }: {
   table: string; row: Record<string, unknown>; columns: string[]; onClose: () => void; onSaved: () => void;
 }) {
-  const meta = DATA_TABLES.find((t) => t.name === table)!;
-  const isNew = row[meta.key] === undefined;
+  const meta = DATA_TABLES.find((t) => t.name === table);
+  const isNew = row[meta?.key ?? "id"] === undefined;
   const hasExtra = table === "students";
   const baseCols = hasExtra ? Array.from(new Set([...columns, "father_phone", "mother_phone"])) : columns;
-  const fields = baseCols.filter((c) => !SKIP.has(c)).sort((a, b) => {
+  const fields = baseCols.filter((c) => !SKIP.has(c) && !(hasExtra && ["enrollment_status", "struck_off_at", "struck_off_by", "struck_off_reason"].includes(c))).sort((a, b) => {
     const ia = PRIORITY.indexOf(a), ib = PRIORITY.indexOf(b);
     return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
   });
@@ -201,8 +202,10 @@ function RowEditor({ table, row, columns, onClose, onSaved }: {
   );
   const [saving, setSaving] = useState(false);
   const save = useServerFn(saveRow);
+  if (!meta) return null;
 
   async function submit() {
+    if (!meta) return;
     setSaving(true);
     try {
       const values: Record<string, unknown> = {};
