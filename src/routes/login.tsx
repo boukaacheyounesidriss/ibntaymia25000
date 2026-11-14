@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { DemoLoginPanel } from "@/components/DemoLoginPanel";
+import appleWhite from "@/assets/apple-sign-in-white.svg";
+import appleBlack from "@/assets/apple-sign-in-black.svg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -73,10 +75,10 @@ function LoginPage() {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleSocial = async (provider: "google" | "apple") => {
     setSubmitting(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin + "/login",
       });
       if (result.error) throw result.error;
@@ -121,8 +123,8 @@ function LoginPage() {
             <Button
               type="button"
               variant="outline"
-              className="google-sign-in w-full"
-              onClick={handleGoogle}
+              className="google-sign-in h-11 w-full"
+              onClick={() => void handleSocial("google")}
               disabled={submitting}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="size-[18px] shrink-0" viewBox="0 0 24 24" aria-hidden="true">
@@ -132,6 +134,18 @@ function LoginPage() {
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z" />
               </svg>
               <span>{t("auth.continue_google")}</span>
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="apple-sign-in h-11 w-full"
+              onClick={() => void handleSocial("apple")}
+              disabled={submitting}
+            >
+              <img src={appleWhite} alt="" className="apple-logo-light" />
+              <img src={appleBlack} alt="" className="apple-logo-dark" />
+              <span>Continue with Apple</span>
             </Button>
 
             <div className="relative">

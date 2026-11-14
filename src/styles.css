@@ -48,6 +48,8 @@
 }
 
 :root {
+  --apple-background: #000000;
+  --apple-foreground: #FFFFFF;
   --google-background: #FFFFFF;
   --google-border: #747775;
   --google-foreground: #1F1F1F;
@@ -92,6 +94,8 @@
 }
 
 .dark {
+  --apple-background: #FFFFFF;
+  --apple-foreground: #000000;
   --google-background: #131314;
   --google-border: #8E918F;
   --google-foreground: #E3E3E3;
@@ -187,6 +191,28 @@
 }
 
 @layer utilities {
+  .apple-sign-in,
+  .apple-sign-in:hover {
+    background: var(--apple-background);
+    color: var(--apple-foreground);
+    border-color: var(--apple-background);
+    font-family: system-ui, sans-serif;
+    font-size: 18.92px;
+    font-weight: 500;
+    letter-spacing: 0;
+    padding-block: 0;
+    padding-inline: 4.4px 8%;
+    gap: 4.4px;
+    margin-block: 4.4px;
+  }
+  .apple-sign-in img {
+    height: 44px;
+    width: 31px;
+    flex-shrink: 0;
+  }
+  .apple-logo-dark { display: none; }
+  .dark .apple-logo-dark { display: block; }
+  .dark .apple-logo-light { display: none; }
   .google-sign-in {
     background: var(--google-background);
     color: var(--google-foreground);

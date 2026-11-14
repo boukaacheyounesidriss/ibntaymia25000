@@ -31,4 +31,4 @@ use the editor.
 
 - Raw data editors must exclude enrollment decision fields and enforce the same restriction server-side; the dedicated legal workflow owns strike-off decisions.
 - Settings groups existing administration pages and offers a browser data export through the authorized backup function; hosted credentials and auth passwords are never included.
-- Google OAuth returns to the public login page and navigates to the dashboard only after session confirmation; use the managed broker and branded Google button tokens.
+- Social OAuth returns to the public login page and navigates to the dashboard only after session confirmation; use the managed broker, Google branding tokens, and original Apple Design Resources artwork for provider buttons.
