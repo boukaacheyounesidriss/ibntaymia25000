@@ -48,6 +48,9 @@
 }
 
 :root {
+  --google-background: #FFFFFF;
+  --google-border: #747775;
+  --google-foreground: #1F1F1F;
   --radius: 0.75rem;
 
   /* Navy Trust palette: deep navy, crisp light surfaces */
@@ -89,6 +92,9 @@
 }
 
 .dark {
+  --google-background: #131314;
+  --google-border: #8E918F;
+  --google-foreground: #E3E3E3;
   --background: oklch(0.19 0.03 264);
   --foreground: oklch(0.94 0.008 240);
   --card: oklch(0.23 0.035 264 / 0.8);
@@ -181,6 +187,25 @@
 }
 
 @layer utilities {
+  .google-sign-in {
+    background: var(--google-background);
+    color: var(--google-foreground);
+    border: 1px solid var(--google-border);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0;
+    padding-inline: 12px;
+    gap: 10px;
+  }
+  .google-sign-in:hover {
+    background: var(--google-background);
+    color: var(--google-foreground);
+  }
+  .google-sign-in svg {
+    width: 18px;
+    height: 18px;
+  }
   .paper-bg {
     background-image: var(--gradient-paper);
   }
