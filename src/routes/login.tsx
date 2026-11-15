@@ -59,6 +59,18 @@ function LoginPage() {
     setSubmitting(true);
     try {
       const identifier = email.trim();
+      if (identifier.includes("@")) {
+        const { error: directErr } = await supabase.auth.signInWithPassword({
+          email: identifier.toLowerCase(),
+          password,
+        });
+        if (!directErr) {
+          navigate({ to: "/dashboard" });
+          return;
+        }
+        if (!/invalid/i.test(directErr.message)) throw directErr;
+        throw new Error("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+      }
       // Always resolve + diagnose server-side so the failure reason is precise
       // (unknown account / wrong password / disabled / unconfirmed / no role).
       const tokens = await signIn({ data: { identifier, password } });
@@ -79,7 +91,7 @@ function LoginPage() {
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin + "/login",
+        redirect_uri: window.location.origin + "/auth/callback",
       });
       if (result.error) throw result.error;
       if (!result.redirected) {

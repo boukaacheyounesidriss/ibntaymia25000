@@ -19,6 +19,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TrustRouteImport } from './routes/trust'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardAbsenceReportRouteImport } from './routes/dashboard.absence-report'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
@@ -120,6 +121,11 @@ const TermsRoute = TermsRouteImport.update({
 const TrustRoute = TrustRouteImport.update({
   id: '/trust',
   path: '/trust',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -396,6 +402,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/appearance': typeof DashboardAppearanceRoute
@@ -459,6 +466,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/appearance': typeof DashboardAppearanceRoute
@@ -524,6 +532,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/absence-report': typeof DashboardAbsenceReportRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/appearance': typeof DashboardAppearanceRoute
@@ -590,6 +599,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/trust'
+    | '/auth/callback'
     | '/dashboard/absence-report'
     | '/dashboard/admin'
     | '/dashboard/appearance'
@@ -653,6 +663,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/trust'
+    | '/auth/callback'
     | '/dashboard/absence-report'
     | '/dashboard/admin'
     | '/dashboard/appearance'
@@ -717,6 +728,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/trust'
+    | '/auth/callback'
     | '/dashboard/absence-report'
     | '/dashboard/admin'
     | '/dashboard/appearance'
@@ -782,6 +794,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   TrustRoute: typeof TrustRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   ApiPublicCliRoute: typeof ApiPublicCliRoute
   ApiPublicCliDemoRoute: typeof ApiPublicCliDemoRoute
   ApiPublicTelegramDispatchRoute: typeof ApiPublicTelegramDispatchRoute
@@ -857,6 +870,13 @@ declare module '@tanstack/react-router' {
       path: '/trust'
       fullPath: '/trust'
       preLoaderRoute: typeof TrustRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -1355,6 +1375,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   TrustRoute: TrustRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   ApiPublicCliRoute: ApiPublicCliRoute,
   ApiPublicCliDemoRoute: ApiPublicCliDemoRoute,
   ApiPublicTelegramDispatchRoute: ApiPublicTelegramDispatchRoute,
