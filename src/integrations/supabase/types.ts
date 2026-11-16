@@ -1608,6 +1608,36 @@ export type Database = {
         }
         Relationships: []
       }
+      teacher_directory: {
+        Row: {
+          code: string
+          full_name: string
+          login_email: string | null
+          needs_review: boolean
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          code: string
+          full_name: string
+          login_email?: string | null
+          needs_review?: boolean
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          code?: string
+          full_name?: string
+          login_email?: string | null
+          needs_review?: boolean
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       telegram_alerts: {
         Row: {
           class_name: string

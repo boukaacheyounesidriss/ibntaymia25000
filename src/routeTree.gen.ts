@@ -64,6 +64,7 @@ import { Route as DashboardStudentsRouteImport } from './routes/dashboard.studen
 import { Route as DashboardSubstitutionsRouteImport } from './routes/dashboard.substitutions'
 import { Route as DashboardSupervisorRouteImport } from './routes/dashboard.supervisor'
 import { Route as DashboardTeacherRouteImport } from './routes/dashboard.teacher'
+import { Route as DashboardTeachersRouteImport } from './routes/dashboard.teachers'
 import { Route as DashboardTodayRouteImport } from './routes/dashboard.today'
 import { Route as DashboardTripsRouteImport } from './routes/dashboard.trips'
 import { Route as DashboardUsersRouteImport } from './routes/dashboard.users'
@@ -349,6 +350,11 @@ const DashboardTeacherRoute = DashboardTeacherRouteImport.update({
   path: '/teacher',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTeachersRoute = DashboardTeachersRouteImport.update({
+  id: '/teachers',
+  path: '/teachers',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardTodayRoute = DashboardTodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -446,6 +452,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -510,6 +517,7 @@ export interface FileRoutesByTo {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -576,6 +584,7 @@ export interface FileRoutesById {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -643,6 +652,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
     | '/dashboard/users'
@@ -707,6 +717,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
     | '/dashboard/users'
@@ -772,6 +783,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
     | '/dashboard/users'
@@ -1187,6 +1199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTeacherRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/teachers': {
+      id: '/dashboard/teachers'
+      path: '/teachers'
+      fullPath: '/dashboard/teachers'
+      preLoaderRoute: typeof DashboardTeachersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/today': {
       id: '/dashboard/today'
       path: '/today'
@@ -1302,6 +1321,7 @@ interface DashboardRouteChildren {
   DashboardSubstitutionsRoute: typeof DashboardSubstitutionsRoute
   DashboardSupervisorRoute: typeof DashboardSupervisorRoute
   DashboardTeacherRoute: typeof DashboardTeacherRoute
+  DashboardTeachersRoute: typeof DashboardTeachersRoute
   DashboardTodayRoute: typeof DashboardTodayRoute
   DashboardTripsRoute: typeof DashboardTripsRoute
   DashboardUsersRoute: typeof DashboardUsersRoute
@@ -1353,6 +1373,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSubstitutionsRoute: DashboardSubstitutionsRoute,
   DashboardSupervisorRoute: DashboardSupervisorRoute,
   DashboardTeacherRoute: DashboardTeacherRoute,
+  DashboardTeachersRoute: DashboardTeachersRoute,
   DashboardTodayRoute: DashboardTodayRoute,
   DashboardTripsRoute: DashboardTripsRoute,
   DashboardUsersRoute: DashboardUsersRoute,

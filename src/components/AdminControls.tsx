@@ -15,6 +15,7 @@ const controls = [
   { to: "/dashboard/import", label: "الاستيراد الجماعي", icon: FileUp },
   { to: "/dashboard/parent-phones", label: "أرقام الأولياء", icon: Phone },
   { to: "/dashboard/class-reps", label: "مسؤولو الأقسام", icon: UserCheck },
+  { to: "/dashboard/teachers", label: "الأساتذة والإسناد", icon: Users },
 ] as const;
 
 export function AdminControls() {
