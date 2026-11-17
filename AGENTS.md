@@ -32,3 +32,6 @@ use the editor.
 - Raw data editors must exclude enrollment decision fields and enforce the same restriction server-side; the dedicated legal workflow owns strike-off decisions.
 - Settings groups existing administration pages and offers a browser data export through the authorized backup function; hosted credentials and auth passwords are never included.
 - Social OAuth returns to the public login page and navigates to the dashboard only after session confirmation; use the managed broker, Google branding tokens, and original Apple Design Resources artwork for provider buttons.
+- Authorize role management through the database's verified immutable owner identity; never through email, editable metadata or an administrator/developer role, to prevent delegation and account takeover.
+- Keep built-in enum roles and additive custom role definitions separate; custom roles grant only existing permission capabilities, never implicit built-in role membership or wider data visibility.
+- Change built-in account roles atomically through the owner-authorized database function and protect owner credentials in every account administration path.

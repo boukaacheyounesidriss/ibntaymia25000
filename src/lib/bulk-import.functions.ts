@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireRoleOwner } from "@/lib/role-owner";
 
 const rowSchema = z.object({
   full_name: z.string().trim().min(2).max(200),
@@ -69,6 +70,7 @@ export const bulkImportAccounts = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data, context }) => {
+    await requireRoleOwner(context.supabase);
     // Authorization: admin only
     const { data: isAdmin } = checked(
       await context.supabase.rpc("has_role", {

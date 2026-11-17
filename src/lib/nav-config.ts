@@ -1,4 +1,5 @@
 import type { AppRole } from "@/lib/use-auth";
+import { isRoleOwnerIdentity } from "@/lib/role-owner";
 
 export type NavItem = {
   url: string;
@@ -180,7 +181,8 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 /** Returns true if the user can access the given path based on their roles. */
-export function canAccess(path: string, userRoles: AppRole[]): boolean {
+export function canAccess(path: string, userRoles: AppRole[], userId?: string): boolean {
+  if (path.replace(/\/$/, "") === "/dashboard/permissions") return isRoleOwnerIdentity(userId);
   // Developer (technical maintainer) has unrestricted access to every page.
   if (userRoles.includes("developer")) return true;
   // Always allow dashboard root

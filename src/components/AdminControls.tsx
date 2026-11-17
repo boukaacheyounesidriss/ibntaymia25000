@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/use-auth";
 import { exportBackup } from "@/lib/backup.functions";
+import { isRoleOwnerIdentity } from "@/lib/role-owner";
 
 const controls = [
   { to: "/dashboard/users", label: "الحسابات وكلمات المرور", icon: Users },
@@ -19,7 +20,7 @@ const controls = [
 ] as const;
 
 export function AdminControls() {
-  const { roles } = useAuth();
+  const { roles, user } = useAuth();
   const backup = useServerFn(exportBackup);
   const [busy, setBusy] = useState(false);
   if (!roles.includes("admin") && !roles.includes("developer")) return null;
@@ -42,7 +43,7 @@ export function AdminControls() {
     <section className="space-y-4 border-b border-border pb-6" aria-labelledby="admin-controls-heading">
       <h2 id="admin-controls-heading" className="text-lg font-semibold">إدارة المؤسسة</h2>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {controls.map(({ to, label, icon: Icon }) => (
+        {controls.filter(({ to }) => to !== "/dashboard/permissions" || isRoleOwnerIdentity(user?.id)).map(({ to, label, icon: Icon }) => (
           <Button key={to} asChild variant="outline" className="h-auto min-h-11 justify-start whitespace-normal text-start">
             <Link to={to}><Icon className="size-4 shrink-0" />{label}</Link>
           </Button>

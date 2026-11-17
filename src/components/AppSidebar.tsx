@@ -43,6 +43,7 @@ import { SIMPLE_MODE_PAGES, useSimpleMode } from "@/lib/simple-mode";
 import { Button } from "./ui/button";
 import { useRealtimeTable } from "@/lib/use-realtime-table";
 import { Badge } from "./ui/badge";
+import { isRoleOwnerIdentity } from "@/lib/role-owner";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard/offline": WifiOff,
@@ -80,18 +81,20 @@ export function AppSidebar() {
   const simple = useSimpleMode();
   const visibleItems = NAV_ITEMS.filter(
     (it) => !it.roles || roles.includes("developer") || it.roles.some((r) => roles.includes(r)),
-  ).filter((it) => !simple || SIMPLE_MODE_PAGES.has(it.url));
+  ).filter((it) => it.url !== "/dashboard/permissions" || isRoleOwnerIdentity(user?.id))
+    .filter((it) => !simple || SIMPLE_MODE_PAGES.has(it.url));
 
   useRealtimeTable("notifications", ["sidebar-unread", user?.id]);
   const { data: unread = 0 } = useQuery({
     queryKey: ["sidebar-unread", user?.id],
     enabled: !!user,
     queryFn: async () => {
+      if (!user) return 0;
       const { count } = await supabase
         .from("notifications")
         .select("id", { count: "exact", head: true })
         .is("read_at", null)
-        .eq("recipient_id", user!.id);
+        .eq("recipient_id", user.id);
       return count ?? 0;
     },
   });
@@ -188,10 +191,11 @@ function ProfileAvatar() {
     enabled: !!user,
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
+      if (!user) return null;
       const { data } = await supabase
         .from("profiles")
         .select("avatar_url")
-        .eq("id", user!.id)
+        .eq("id", user.id)
         .maybeSingle();
       const { resolveAvatarUrl } = await import("@/lib/avatar");
       return resolveAvatarUrl(data?.avatar_url ?? null);

@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth, type AppRole } from "@/lib/use-auth";
+import { isRoleOwnerIdentity } from "@/lib/role-owner";
 import {
   createAccount,
   deleteAccount,
@@ -63,6 +64,8 @@ const ALL_ROLES: AppRole[] = [
   "gate_monitor",
   "parent",
   "student",
+  "class_rep",
+  "class_rep_deputy",
 ];
 
 const ROLE_LABEL: Record<string, string> = {
@@ -94,7 +97,8 @@ function errText(e: unknown) {
 }
 
 function UsersPage() {
-  const { roles, loading: authLoading } = useAuth();
+  const { roles, user, loading: authLoading } = useAuth();
+  const isOwner = isRoleOwnerIdentity(user?.id);
   const isDeveloper = roles.includes("developer");
   const isAdmin = roles.includes("admin");
   const allowed = isDeveloper || isAdmin;
@@ -230,8 +234,7 @@ function UsersPage() {
 
       {!isDeveloper && (
         <p className="mb-4 rounded-xl border border-accent/30 bg-accent/10 p-3 text-sm text-muted-foreground">
-          أنت مسجّل كمدير نظام: يمكنك إدارة كل الحسابات العادية، لكن منح أو سحب دور المبرّمج — أو
-          تعديل حساب يملكه — محجوز للمبرّمج وحده.
+          يمكنك إدارة الحسابات العادية؛ إنشاء الحسابات وتغيير الأدوار والصلاحيات محجوز لصاحب المؤسسة.
         </p>
       )}
 
@@ -244,7 +247,7 @@ function UsersPage() {
 
       <div className="space-y-3">
         {filtered.map((acc) => {
-          const locked = !isDeveloper && acc.roles.includes("developer");
+          const locked = (!isDeveloper && acc.roles.includes("developer")) || (!isOwner && isRoleOwnerIdentity(acc.id));
           return (
             <Card key={acc.id} className={locked ? "opacity-70" : undefined}>
               <CardContent className="flex flex-wrap items-start justify-between gap-4 p-4">
@@ -278,7 +281,7 @@ function UsersPage() {
                     {ALL_ROLES.map((r) => {
                       const checked = acc.roles.includes(r);
                       const disabled =
-                        locked || busy === acc.id || (r === "developer" && !isDeveloper);
+                        locked || busy === acc.id || !isOwner || isRoleOwnerIdentity(acc.id);
                       return (
                         <label
                           key={r}
@@ -435,7 +438,7 @@ function UsersPage() {
                   >
                     <Checkbox
                       checked={form.roles.includes(r)}
-                      disabled={r === "developer" && !isDeveloper}
+                      disabled={!isOwner}
                       onCheckedChange={(v) =>
                         setForm({
                           ...form,

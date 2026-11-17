@@ -446,6 +446,62 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_role_permissions: {
+        Row: {
+          allowed: boolean
+          permission: string
+          role_key: string
+        }
+        Insert: {
+          allowed?: boolean
+          permission: string
+          role_key: string
+        }
+        Update: {
+          allowed?: boolean
+          permission?: string
+          role_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_role_permissions_role_key_fkey"
+            columns: ["role_key"]
+            isOneToOne: false
+            referencedRelation: "role_definitions"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      custom_user_roles: {
+        Row: {
+          role_key: string
+          user_id: string
+        }
+        Insert: {
+          role_key: string
+          user_id: string
+        }
+        Update: {
+          role_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_user_roles_role_key_fkey"
+            columns: ["role_key"]
+            isOneToOne: false
+            referencedRelation: "role_definitions"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "custom_user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entry_permits: {
         Row: {
           created_at: string
@@ -1142,6 +1198,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      role_definitions: {
+        Row: {
+          builtin: boolean
+          created_at: string
+          description: string
+          key: string
+          label: string
+        }
+        Insert: {
+          builtin?: boolean
+          created_at?: string
+          description?: string
+          key: string
+          label: string
+        }
+        Update: {
+          builtin?: boolean
+          created_at?: string
+          description?: string
+          key?: string
+          label?: string
+        }
+        Relationships: []
       }
       role_permissions: {
         Row: {
@@ -1840,6 +1920,7 @@ export type Database = {
         Returns: boolean
       }
       is_management: { Args: { _uid: string }; Returns: boolean }
+      is_role_owner: { Args: never; Returns: boolean }
       kiosk_context: { Args: never; Returns: Json }
       kiosk_submit_attendance: {
         Args: {
@@ -1856,6 +1937,13 @@ export type Database = {
           full_name: string
           id: string
         }[]
+      }
+      owner_set_account_roles: {
+        Args: {
+          _roles: Database["public"]["Enums"]["app_role"][]
+          _user_id: string
+        }
+        Returns: undefined
       }
       reset_teacher_attendance_pin: {
         Args: { _teacher: string }

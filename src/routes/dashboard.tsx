@@ -46,7 +46,7 @@ function DashboardLayout() {
   // bounce them to their default landing page for their primary role.
   useEffect(() => {
     if (loading || !user) return;
-    if (!canAccess(path, roles)) {
+    if (!canAccess(path, roles, user.id)) {
       navigate({ to: defaultLandingFor(roles), replace: true });
     }
   }, [path, roles, loading, user, navigate]);
@@ -76,6 +76,8 @@ function DashboardLayout() {
       </div>
     );
   }
+
+  if (!canAccess(path, roles, user.id)) return null;
 
   return (
     <SidebarProvider>

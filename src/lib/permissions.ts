@@ -22,7 +22,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
   {
     title: "التلاميذ والأقسام",
     items: [
-      { key: "students.manage", label: "إضافة وتعديل وحذف التلاميذ" },
+      { key: "students.manage", label: "إضافة وتعديل التلاميذ" },
       { key: "classes.manage", label: "إنشاء وتعديل الأقسام" },
       { key: "behavior.manage", label: "تسجيل ملاحظات السلوك" },
     ],

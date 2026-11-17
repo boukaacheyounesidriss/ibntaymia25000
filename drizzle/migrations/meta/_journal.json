@@ -134,6 +134,13 @@
       "when": 1794864227607,
       "tag": "0018_teacher_directory",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794898412964,
+      "tag": "0019_exclusive_owner_role_management",
+      "breakpoints": true
     }
   ]
 }

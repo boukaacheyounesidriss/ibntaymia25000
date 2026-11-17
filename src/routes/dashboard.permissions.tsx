@@ -1,285 +1,176 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { friendlyError } from "@/lib/friendly-error";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShieldCheck, Lock, Users } from "lucide-react";
+import { Plus, Save, ShieldCheck, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/use-auth";
-import { listAccounts } from "@/lib/admin-accounts.functions";
+import { useAuth, type AppRole } from "@/lib/use-auth";
 import { PERMISSION_GROUPS, LIMIT_SETTINGS } from "@/lib/permissions";
+import { friendlyError } from "@/lib/friendly-error";
+import { isRoleOwnerIdentity } from "@/lib/role-owner";
 
 export const Route = createFileRoute("/dashboard/permissions")({
-  head: () => ({
-    meta: [
-      { title: "إعدادات الحسابات والصلاحيات — إداروم" },
-      { name: "description", content: "ضبط ما يسمح به لكل دور ولكل حساب في منصة إداروم." },
-      { property: "og:title", content: "إعدادات الحسابات والصلاحيات — إداروم" },
-      { property: "og:description", content: "ضبط ما يسمح به لكل دور ولكل حساب في منصة إداروم." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  ssr: false,
+  beforeLoad: async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw redirect({ to: "/login" });
+    const { data, error } = await supabase.rpc("is_role_owner");
+    if (error || data !== true) throw redirect({ to: "/dashboard" });
+  },
+  head: () => ({ meta: [
+    { title: "إدارة الأدوار الحصرية — إداروم" },
+    { name: "description", content: "إدارة الأدوار وصلاحيات الأدوار والحسابات لصاحب المؤسسة." },
+    { property: "og:title", content: "إدارة الأدوار الحصرية — إداروم" },
+    { property: "og:description", content: "إدارة الأدوار وصلاحيات الأدوار والحسابات لصاحب المؤسسة." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: PermissionsPage,
 });
 
-const ROLES = [
-  { key: "teacher", label: "أستاذ" },
-  { key: "supervisor", label: "ناظر/مراقب" },
-  { key: "director", label: "مدير" },
-  { key: "parent", label: "ولي" },
-  { key: "student", label: "تلميذ" },
-  { key: "gate_monitor", label: "حارس" },
-  { key: "class_rep", label: "مسؤول القسم" },
-  { key: "class_rep_deputy", label: "نائب المسؤول" },
-] as const;
-
-// Tables are newer than the generated types.
-const db = supabase as unknown as { from: (t: string) => any };
+type RoleDef = { key: string; label: string; description: string; builtin: boolean };
+type Account = { id: string; full_name: string | null };
+type PermissionRow = { permission: string; allowed: boolean };
 
 function PermissionsPage() {
-  const { user, hasRole, loading } = useAuth();
-  const canEdit = hasRole("admin");
-
-  if (loading) return null;
-  if (!canEdit)
-    return <p className="p-6 text-sm text-muted-foreground">هذه الصفحة مخصصة للمدير العام والمبرمج فقط.</p>;
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="إعدادات الحسابات والصلاحيات"
-        description="حدد ما يسمح به لكل دور، واستثن حسابات بعينها، واضبط الحدود الزمنية."
-      />
-      <Card>
-        <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4 text-sm">
-          <span className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            إضافة الحسابات وحذفها وتعديل بياناتها وأدوارها وكلمات مرورها وتجميدها:
-          </span>
-          <Button asChild size="sm" variant="outline">
-            <Link to="/dashboard/users">فتح إدارة الحسابات</Link>
-          </Button>
-        </CardContent>
-      </Card>
-      <Tabs defaultValue="roles">
-        <TabsList>
-          <TabsTrigger value="roles">صلاحيات الأدوار</TabsTrigger>
-          <TabsTrigger value="users">استثناءات الحسابات</TabsTrigger>
-          <TabsTrigger value="limits">الحدود</TabsTrigger>
-        </TabsList>
-        <TabsContent value="roles"><RoleMatrix userId={user?.id} /></TabsContent>
-        <TabsContent value="users"><UserOverrides userId={user?.id} /></TabsContent>
-        <TabsContent value="limits"><Limits userId={user?.id} /></TabsContent>
-      </Tabs>
-      <p className="flex items-center gap-1 text-xs text-muted-foreground">
-        <Lock className="h-3 w-3" /> الصلاحيات المعلّمة بقفل تفرضها قاعدة البيانات نفسها ولا يمكن تجاوزها. المدير العام والمبرمج يملكان كل الصلاحيات دائماً، والإدارة (مدير، ناظر) لا تخضع لقيود الحضور.
-      </p>
-    </div>
-  );
-}
-
-function RoleMatrix({ userId }: { userId?: string }) {
-  const [map, setMap] = useState<Record<string, boolean>>({});
-  const load = useCallback(async () => {
-    const { data } = await db.from("role_permissions").select("role, permission, allowed");
-    const m: Record<string, boolean> = {};
-    (data ?? []).forEach((r: any) => (m[`${r.role}|${r.permission}`] = r.allowed));
-    setMap(m);
-  }, []);
-  useEffect(() => { load(); }, [load]);
-
-  async function toggle(role: string, perm: string, allowed: boolean) {
-    setMap((m) => ({ ...m, [`${role}|${perm}`]: allowed }));
-    const { error } = await db
-      .from("role_permissions")
-      .upsert({ role, permission: perm, allowed, updated_by: userId, updated_at: new Date().toISOString() });
-    if (error) { toast.error(friendlyError(error)); load(); } else toast.success("تم الحفظ");
-  }
-
-  return (
-    <div className="space-y-4">
-      {PERMISSION_GROUPS.map((g) => (
-        <Card key={g.title}>
-          <CardHeader><CardTitle className="text-base">{g.title}</CardTitle></CardHeader>
-          <CardContent className="overflow-x-auto">
-            <table dir="rtl" className="w-full min-w-[640px] text-sm">
-              <thead>
-                <tr className="text-muted-foreground">
-                  <th className="py-2 text-start font-medium">الصلاحية</th>
-                  {ROLES.map((r) => <th key={r.key} className="px-2 py-2 text-center font-medium">{r.label}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {g.items.map((p) => (
-                  <tr key={p.key} className="border-t border-border">
-                    <td className="py-2">
-                      <div className="flex items-center gap-1">
-                        {p.enforced && <Lock className="h-3 w-3 text-muted-foreground" />}
-                        {p.label}
-                      </div>
-                      {p.hint && <div className="text-xs text-muted-foreground">{p.hint}</div>}
-                    </td>
-                    {ROLES.map((r) => (
-                      <td key={r.key} className="px-2 py-2 text-center">
-                        <Switch
-                          checked={!!map[`${r.key}|${p.key}`]}
-                          onCheckedChange={(v) => toggle(r.key, p.key, v)}
-                          aria-label={`${p.label} — ${r.label}`}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-type Account = { id: string; email: string | null; fullName: string | null; roles: string[] };
-
-function UserOverrides({ userId }: { userId?: string }) {
-  const fetchAccounts = useServerFn(listAccounts);
+  const { user } = useAuth();
+  const [roles, setRoles] = useState<RoleDef[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [q, setQ] = useState("");
-  const [sel, setSel] = useState<Account | null>(null);
-  const [ovr, setOvr] = useState<Record<string, boolean>>({});
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
+  const [search, setSearch] = useState("");
+  const [roleMap, setRoleMap] = useState<Record<string, boolean>>({});
+  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
+  const [assigned, setAssigned] = useState<string[]>([]);
+  const [label, setLabel] = useState("");
+  const [description, setDescription] = useState("");
+  const [newKey, setNewKey] = useState("");
+  const [newLabel, setNewLabel] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [limits, setLimits] = useState<Record<string, string>>({});
+  const role = roles.find(r => r.key === selectedRole);
 
-  useEffect(() => {
-    fetchAccounts().then((a) => setAccounts(a as Account[])).catch((e) => toast.error(String(e.message ?? e)));
-  }, [fetchAccounts]);
+  const load = useCallback(async () => {
+    const results = await Promise.all([
+      supabase.from("role_definitions").select("key,label,description,builtin").order("builtin", { ascending: false }).order("label"),
+      supabase.from("profiles").select("id,full_name").order("full_name"),
+      supabase.from("access_settings").select("key,value"),
+    ]);
+    for (const r of results) if (r.error) throw r.error;
+    setRoles(results[0].data ?? []);
+    setAccounts(results[1].data ?? []);
+    setLimits(Object.fromEntries((results[2].data ?? []).map(r => [r.key, String(r.value)])));
+    setSelectedRole(current => current || results[0].data?.[0]?.key || "");
+  }, []);
 
+  useEffect(() => { load().catch(e => toast.error(friendlyError(e))).finally(() => setLoading(false)); }, [load]);
   useEffect(() => {
-    if (!sel) return;
-    db.from("user_permission_overrides").select("permission, allowed").eq("user_id", sel.id).then(({ data }: any) => {
-      const m: Record<string, boolean> = {};
-      (data ?? []).forEach((r: any) => (m[r.permission] = r.allowed));
-      setOvr(m);
+    if (!role) return;
+    let active = true;
+    setLabel(role.label); setDescription(role.description); setDetailLoading(true); setRoleMap({});
+    const query = role.builtin
+      ? supabase.from("role_permissions").select("permission,allowed").eq("role", role.key as AppRole)
+      : supabase.from("custom_role_permissions").select("permission,allowed").eq("role_key", role.key);
+    query.then(({ data, error }) => {
+      if (!active) return;
+      if (error) toast.error(friendlyError(error));
+      setRoleMap(Object.fromEntries((data ?? []).map(r => [r.permission, r.allowed]))); setDetailLoading(false);
     });
-  }, [sel]);
+    return () => { active = false; };
+  }, [role]);
+  useEffect(() => {
+    if (!selectedUser) return;
+    let active = true;
+    setDetailLoading(true); setOverrides({}); setAssigned([]);
+    Promise.all([
+      supabase.from("user_permission_overrides").select("permission,allowed").eq("user_id", selectedUser),
+      supabase.from("custom_user_roles").select("role_key").eq("user_id", selectedUser),
+      supabase.from("user_roles").select("role").eq("user_id", selectedUser),
+    ]).then(results => {
+      if (!active) return;
+      for (const r of results) if (r.error) toast.error(friendlyError(r.error));
+      setOverrides(Object.fromEntries((results[0].data ?? []).map(r => [r.permission, r.allowed])));
+      setAssigned([...(results[1].data ?? []).map(r => r.role_key), ...(results[2].data ?? []).map(r => r.role)]);
+      setDetailLoading(false);
+    });
+    return () => { active = false; };
+  }, [selectedUser]);
 
-  const filtered = useMemo(
-    () => accounts.filter((a) => `${a.fullName ?? ""} ${a.email ?? ""}`.toLowerCase().includes(q.toLowerCase())).slice(0, 50),
-    [accounts, q],
-  );
-
-  async function setMode(perm: string, mode: "inherit" | "allow" | "deny") {
-    if (!sel) return;
-    if (mode === "inherit") {
-      const { error } = await db.from("user_permission_overrides").delete().eq("user_id", sel.id).eq("permission", perm);
-      if (error) return toast.error(friendlyError(error));
-      setOvr((m) => { const n = { ...m }; delete n[perm]; return n; });
-    } else {
-      const allowed = mode === "allow";
-      const { error } = await db.from("user_permission_overrides").upsert({
-        user_id: sel.id, permission: perm, allowed, updated_by: userId, updated_at: new Date().toISOString(),
-      });
-      if (error) return toast.error(friendlyError(error));
-      setOvr((m) => ({ ...m, [perm]: allowed }));
-    }
-    toast.success("تم الحفظ");
+  async function run(action: () => Promise<void>) {
+    setBusy(true);
+    try { await action(); toast.success("تم الحفظ"); } catch (e) { toast.error(friendlyError(e)); } finally { setBusy(false); }
   }
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
-      <Card>
-        <CardContent className="space-y-2 pt-4">
-          <Input placeholder="بحث بالاسم أو البريد" value={q} onChange={(e) => setQ(e.target.value)} />
-          <div className="max-h-[520px] space-y-1 overflow-y-auto">
-            {filtered.map((a) => (
-              <button
-                key={a.id}
-                onClick={() => setSel(a)}
-                className={`w-full rounded-md px-2 py-2 text-start text-sm hover:bg-muted ${sel?.id === a.id ? "bg-muted" : ""}`}
-              >
-                <div className="font-medium">{a.fullName ?? a.email}</div>
-                <div className="text-xs text-muted-foreground" dir="ltr">{a.email}</div>
-              </button>
-            ))}
+  function checked(result: { error: { message: string } | null }) { if (result.error) throw result.error; }
+  async function saveRolePermission(permission: string, allowed: boolean) {
+    if (!role) return;
+    await run(async () => {
+      if (role.builtin) checked(await supabase.from("role_permissions").upsert({ role: role.key as AppRole, permission, allowed, updated_by: user?.id }));
+      else checked(await supabase.from("custom_role_permissions").upsert({ role_key: role.key, permission, allowed }));
+      setRoleMap(m => ({ ...m, [permission]: allowed }));
+    });
+  }
+  async function saveOverride(permission: string, mode: string) {
+    await run(async () => {
+      if (mode === "inherit") checked(await supabase.from("user_permission_overrides").delete().eq("user_id", selectedUser).eq("permission", permission));
+      else checked(await supabase.from("user_permission_overrides").upsert({ user_id: selectedUser, permission, allowed: mode === "allow", updated_by: user?.id }));
+      setOverrides(m => { const next = { ...m }; if (mode === "inherit") delete next[permission]; else next[permission] = mode === "allow"; return next; });
+    });
+  }
+  async function assignRole(r: RoleDef, enabled: boolean) {
+    const next = enabled ? [...assigned, r.key] : assigned.filter(key => key !== r.key);
+    await run(async () => {
+      if (r.builtin) checked(await supabase.rpc("owner_set_account_roles", { _user_id: selectedUser, _roles: next.filter(key => roles.some(d => d.key === key && d.builtin)) as AppRole[] }));
+      else if (enabled) checked(await supabase.from("custom_user_roles").insert({ user_id: selectedUser, role_key: r.key }));
+      else checked(await supabase.from("custom_user_roles").delete().eq("user_id", selectedUser).eq("role_key", r.key));
+      setAssigned(next);
+    });
+  }
+  if (loading) return <Loader2 className="size-6 animate-spin" aria-label="جارٍ التحميل" />;
+  const disabled = busy || detailLoading;
+  return <div className="mx-auto max-w-5xl space-y-6" dir="rtl">
+    <PageHeader title="الأدوار والصلاحيات" />
+    <div className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4" />صاحب المؤسسة · {roles.filter(r => r.builtin).length} أدوار أساسية · {roles.filter(r => !r.builtin).length} أدوار مخصصة</div>
+    <Tabs defaultValue="roles">
+      <TabsList className="w-full"><TabsTrigger value="roles" className="flex-1">الأدوار</TabsTrigger><TabsTrigger value="accounts" className="flex-1">الحسابات</TabsTrigger><TabsTrigger value="limits" className="flex-1">الحدود</TabsTrigger></TabsList>
+      <TabsContent value="roles" className="space-y-6 pt-4">
+        <section className="space-y-3 border-b border-border pb-6">
+          <h2 className="font-semibold">دور جديد</h2>
+          <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+            <div className="space-y-2"><Label htmlFor="role-label">اسم الدور</Label><Input id="role-label" value={newLabel} onChange={e => setNewLabel(e.target.value)} maxLength={120} /></div>
+            <div className="space-y-2"><Label htmlFor="role-key">رمز الدور</Label><Input id="role-key" dir="ltr" placeholder="school_club" value={newKey} onChange={e => setNewKey(e.target.value)} maxLength={64} /></div>
+            <Button className="self-end" disabled={busy || newLabel.trim().length < 2 || !/^[a-z][a-z0-9_]{1,63}$/.test(newKey)} onClick={() => run(async () => {
+              checked(await supabase.from("role_definitions").insert({ key: newKey, label: newLabel.trim() })); await load(); setSelectedRole(newKey); setNewKey(""); setNewLabel("");
+            })}><Plus className="size-4" />إنشاء الدور</Button>
           </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="pt-4">
-          {!sel ? (
-            <p className="text-sm text-muted-foreground">اختر حساباً لمنحه أو سحب صلاحية منه بشكل خاص، بغض النظر عن دوره.</p>
-          ) : (
-            <div className="space-y-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <ShieldCheck className="h-4 w-4" />
-                <span className="font-semibold">{sel.fullName ?? sel.email}</span>
-                {sel.roles.map((r) => <Badge key={r} variant="secondary">{r}</Badge>)}
-              </div>
-              {PERMISSION_GROUPS.map((g) => (
-                <div key={g.title}>
-                  <div className="mb-2 text-sm font-semibold">{g.title}</div>
-                  <div className="space-y-2">
-                    {g.items.map((p) => {
-                      const mode = p.key in ovr ? (ovr[p.key] ? "allow" : "deny") : "inherit";
-                      return (
-                        <div key={p.key} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm">
-                          <span>{p.label}</span>
-                          <div className="flex gap-1">
-                            {(["inherit", "allow", "deny"] as const).map((m) => (
-                              <Button key={m} size="sm" variant={mode === m ? (m === "deny" ? "destructive" : "default") : "outline"} onClick={() => setMode(p.key, m)}>
-                                {m === "inherit" ? "حسب الدور" : m === "allow" ? "مسموح" : "ممنوع"}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
+        </section>
+        <Select value={selectedRole} onValueChange={setSelectedRole}><SelectTrigger aria-label="اختيار الدور"><SelectValue /></SelectTrigger><SelectContent>{roles.map(r => <SelectItem key={r.key} value={r.key}>{r.label} · {r.builtin ? "أساسي" : "مخصص"}</SelectItem>)}</SelectContent></Select>
+        {role && <><div className="grid gap-3 sm:grid-cols-2"><div className="space-y-2"><Label htmlFor="edit-role">اسم الدور</Label><Input id="edit-role" value={label} onChange={e => setLabel(e.target.value)} /></div><div className="space-y-2"><Label htmlFor="role-description">المهام</Label><Textarea id="role-description" value={description} onChange={e => setDescription(e.target.value)} maxLength={2000} /></div></div>
+          <Button disabled={disabled || label.trim().length < 2} onClick={() => run(async () => { checked(await supabase.from("role_definitions").update({ label: label.trim(), description }).eq("key", role.key)); await load(); })}><Save className="size-4" />حفظ الدور</Button>
+          <PermissionFields map={roleMap} disabled={disabled} toggle={saveRolePermission} />
+        </>}
+      </TabsContent>
+      <TabsContent value="accounts" className="space-y-5 pt-4">
+        <Input aria-label="بحث عن حساب" placeholder="بحث باسم صاحب الحساب" value={search} onChange={e => setSearch(e.target.value)} />
+        <Select value={selectedUser} onValueChange={setSelectedUser}><SelectTrigger aria-label="اختيار الحساب"><SelectValue placeholder="اختر الحساب" /></SelectTrigger><SelectContent>{accounts.filter(a => (a.full_name ?? a.id).includes(search)).map(a => <SelectItem key={a.id} value={a.id}>{a.full_name ?? a.id}</SelectItem>)}</SelectContent></Select>
+        {selectedUser && <>
+          <section className="space-y-3 border-b border-border pb-5"><h2 className="font-semibold">الأدوار المسندة</h2><div className="grid gap-3 sm:grid-cols-2">{roles.map(r => <label key={r.key} className="flex items-center gap-3"><Checkbox checked={assigned.includes(r.key)} disabled={disabled || isRoleOwnerIdentity(selectedUser)} onCheckedChange={v => assignRole(r, v === true)} />{r.label}</label>)}</div></section>
+          <PermissionFields map={overrides} disabled={disabled || isRoleOwnerIdentity(selectedUser)} mode onMode={saveOverride} />
+        </>}
+      </TabsContent>
+      <TabsContent value="limits" className="space-y-5 pt-4">{LIMIT_SETTINGS.map(s => <div key={s.key} className="flex flex-wrap items-end gap-3"><div className="flex-1 space-y-1"><Label htmlFor={s.key}>{s.label}</Label><p className="text-xs text-muted-foreground">{s.hint}</p></div><Input id={s.key} className="w-24" type="number" min={0} value={limits[s.key] ?? ""} onChange={e => setLimits(m => ({ ...m, [s.key]: e.target.value }))} /><Button disabled={busy} onClick={() => run(async () => { const value = Number(limits[s.key]); if (!Number.isInteger(value) || value < 0) throw new Error("أدخل عدداً صحيحاً غير سالب"); checked(await supabase.from("access_settings").upsert({ key: s.key, value, updated_by: user?.id })); })}><Save className="size-4" />حفظ</Button></div>)}</TabsContent>
+    </Tabs>
+  </div>;
 }
 
-function Limits({ userId }: { userId?: string }) {
-  const [vals, setVals] = useState<Record<string, string>>({});
-  useEffect(() => {
-    db.from("access_settings").select("key, value").then(({ data }: any) => {
-      const m: Record<string, string> = {};
-      (data ?? []).forEach((r: any) => (m[r.key] = String(r.value)));
-      setVals(m);
-    });
-  }, []);
-  async function save(key: string) {
-    const n = Number(vals[key]);
-    if (!Number.isFinite(n) || n < 0) return toast.error("أدخل رقماً صحيحاً موجباً");
-    const { error } = await db.from("access_settings").upsert({ key, value: Math.floor(n), updated_by: userId, updated_at: new Date().toISOString() });
-    if (error) toast.error(friendlyError(error)); else toast.success("تم الحفظ");
-  }
-  return (
-    <Card>
-      <CardContent className="space-y-4 pt-4">
-        {LIMIT_SETTINGS.map((s) => (
-          <div key={s.key} className="flex flex-wrap items-end gap-3">
-            <div className="flex-1">
-              <div className="text-sm font-medium">{s.label}</div>
-              <div className="text-xs text-muted-foreground">{s.hint} — ينطبق على الأساتذة فقط</div>
-            </div>
-            <Input type="number" min={0} className="w-28" value={vals[s.key] ?? ""} onChange={(e) => setVals((v) => ({ ...v, [s.key]: e.target.value }))} />
-            <Button size="sm" onClick={() => save(s.key)}>حفظ</Button>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  );
+function PermissionFields({ map, disabled, toggle, mode, onMode }: { map: Record<string, boolean>; disabled: boolean; toggle?: (key: string, allowed: boolean) => void; mode?: boolean; onMode?: (key: string, mode: string) => void }) {
+  return <div className="space-y-6">{PERMISSION_GROUPS.map(g => <section key={g.title} className="space-y-2"><h3 className="font-semibold">{g.title}</h3>{g.items.map(p => <div key={p.key} className="flex items-center justify-between gap-3 border-b border-border py-3"><div className="min-w-0 text-sm"><span>{p.label}</span>{p.hint && <p className="text-xs text-muted-foreground">{p.hint}</p>}</div>{mode ? <Select disabled={disabled} value={p.key in map ? map[p.key] ? "allow" : "deny" : "inherit"} onValueChange={v => onMode?.(p.key, v)}><SelectTrigger className="w-32 shrink-0" aria-label={p.label}><SelectValue /></SelectTrigger><SelectContent><SelectItem value="inherit">حسب الدور</SelectItem><SelectItem value="allow">مسموح</SelectItem><SelectItem value="deny">ممنوع</SelectItem></SelectContent></Select> : <Switch disabled={disabled} aria-label={p.label} checked={map[p.key] ?? false} onCheckedChange={v => toggle?.(p.key, v)} />}</div>)}</section>)}</div>;
 }
