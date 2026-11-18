@@ -224,7 +224,7 @@ function UsersPage() {
               <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               <span className="ms-2">تحديث</span>
             </Button>
-            <Button onClick={() => setCreateOpen(true)}>
+            <Button disabled={!isOwner} onClick={() => setCreateOpen(true)}>
               <Plus className="h-4 w-4" />
               <span className="ms-2">حساب جديد</span>
             </Button>
@@ -454,7 +454,7 @@ function UsersPage() {
           </div>
           <DialogFooter>
             <Button
-              disabled={busy === "new"}
+              disabled={busy === "new" || !isOwner}
               onClick={async () => {
                 const ok = await run("new", () => doCreate({ data: form }), "تم إنشاء الحساب");
                 if (ok) {

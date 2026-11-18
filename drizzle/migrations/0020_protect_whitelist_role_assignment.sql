@@ -1,0 +1,1 @@
+CREATE POLICY whitelist_owner_mutations ON public.staff_whitelist AS RESTRICTIVE FOR ALL TO authenticated USING (public.is_role_owner()) WITH CHECK (public.is_role_owner());

@@ -37,8 +37,6 @@ export const Route = createFileRoute("/dashboard/permissions")({
 
 type RoleDef = { key: string; label: string; description: string; builtin: boolean };
 type Account = { id: string; full_name: string | null };
-type PermissionRow = { permission: string; allowed: boolean };
-
 function PermissionsPage() {
   const { user } = useAuth();
   const [roles, setRoles] = useState<RoleDef[]>([]);

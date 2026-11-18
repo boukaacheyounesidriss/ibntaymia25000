@@ -141,6 +141,13 @@
       "when": 1794898412964,
       "tag": "0019_exclusive_owner_role_management",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794961951490,
+      "tag": "0020_protect_whitelist_role_assignment",
+      "breakpoints": true
     }
   ]
 }

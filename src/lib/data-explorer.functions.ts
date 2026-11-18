@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DATA_TABLES } from "@/lib/data-explorer";
 import { guardStudentValues } from "@/lib/data-guards";
-import { guardOwnerAccount } from "@/lib/role-owner";
+import { guardOwnerAccount, requireRoleOwner } from "@/lib/role-owner";
 
 const tableNames = DATA_TABLES.map((t) => t.name) as [string, ...string[]];
 const tableSchema = z.enum(tableNames);
@@ -62,6 +62,7 @@ export const saveRow = createServerFn({ method: "POST" })
     await authorize(context);
     const t = meta(data.table);
     if (t.readOnly) throw new Error("هذا الجدول للقراءة فقط");
+    if (t.name === "staff_whitelist") await requireRoleOwner(context.supabase);
     if (t.name === "profiles" && data.id) guardOwnerAccount(context.userId, data.id);
     const values = { ...data.values };
     if (t.name === "students") guardStudentValues(values, Boolean(data.id));
@@ -92,6 +93,7 @@ export const deleteRow = createServerFn({ method: "POST" })
     await authorize(context);
     const t = meta(data.table);
     if (t.readOnly || t.noDelete) throw new Error("الحذف غير مسموح في هذا الجدول");
+    if (t.name === "staff_whitelist") await requireRoleOwner(context.supabase);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin.from as any)(t.name).delete().eq(t.key, data.id);
     if (error) throw new Error(error.message);

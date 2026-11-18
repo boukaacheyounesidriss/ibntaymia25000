@@ -77,6 +77,11 @@ export const Route = createFileRoute("/api/public/cli-demo")({
         });
         if (roleError || !isAdmin) return json({ ok: false, error: "FORBIDDEN" }, 403);
 
+        if (body.action === "create") {
+          const { data: owner, error } = await authClient.rpc("is_role_owner");
+          if (error || owner !== true) return json({ ok: false, error: "OWNER_ONLY" }, 403);
+        }
+
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const admin = supabaseAdmin as unknown as SupabaseClient;
 
@@ -173,7 +178,8 @@ export const Route = createFileRoute("/api/public/cli-demo")({
               if (error) throw new Error(error.message);
               user = data.user;
             }
-            const uid = user!.id;
+            if (!user) throw new Error("تعذر إنشاء الحساب");
+            const uid = user.id;
             await admin.from("staff_whitelist").delete().ilike("email", targetEmail);
             if (body.role !== "student") {
               await admin
@@ -226,7 +232,7 @@ export const Route = createFileRoute("/api/public/cli-demo")({
             const fullName =
               body.name ??
               ((user.user_metadata as Record<string, unknown> | null)?.["full_name"] as string | undefined) ??
-              targetEmail.split("@")[0]!;
+              targetEmail.split("@")[0] ?? targetEmail;
 
             let classId: string | null = null;
             if (body.className) {
