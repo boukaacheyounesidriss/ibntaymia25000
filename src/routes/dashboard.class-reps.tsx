@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { createLinkedStudentAccount } from "@/lib/student-accounts.functions";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { UserCog, KeyRound } from "lucide-react";
 
@@ -29,6 +32,30 @@ const clean = (m: string) => m.replace(/^[A-Z_]+:\s*/, "");
 function ClassRepsPage() {
   const qc = useQueryClient();
   const [classId, setClassId] = useState("");
+  const createFn = useServerFn(createLinkedStudentAccount);
+  const [acct, setAcct] = useState<{ studentId: string; kind: Kind; username: string; password: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  function pick(kind: Kind, id: string) {
+    const s = students.find((x) => x.id === id);
+    if (s && !s.user_id) {
+      const pw = Math.random().toString(36).slice(2, 8) + Math.floor(10 + Math.random() * 89);
+      return setAcct({ studentId: id, kind, username: "", password: pw });
+    }
+    assign(kind, id);
+  }
+  async function createAndAssign() {
+    if (!acct) return;
+    setBusy(true);
+    try {
+      await createFn({ data: { studentId: acct.studentId, username: acct.username, password: acct.password } });
+      await qc.invalidateQueries({ queryKey: ["class-students", classId] });
+      await assign(acct.kind, acct.studentId);
+      toast.success(`الحساب: ${acct.username} — كلمة السر: ${acct.password}`, { duration: 30000 });
+      setAcct(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e));
+    } finally { setBusy(false); }
+  }
 
   const { data: classes = [] } = useQuery({
     queryKey: ["classes-list"],
@@ -104,12 +131,12 @@ function ClassRepsPage() {
                   <div key={kind} className="space-y-2 rounded-md border p-3">
                     <p className="font-medium">{kind === "rep" ? "مسؤول القسم" : "نائب مسؤول القسم"}</p>
                     <p className="text-sm text-muted-foreground">الحالي: {cur?.students?.full_name ?? "غير معيّن"}</p>
-                    <Select value="" onValueChange={(v) => assign(kind, v)}>
+                    <Select value="" onValueChange={(v) => pick(kind, v)}>
                       <SelectTrigger><SelectValue placeholder={cur ? "استبدال بـ..." : "تعيين..."} /></SelectTrigger>
                       <SelectContent>
                         {students.map((s) => (
-                          <SelectItem key={s.id} value={s.id} disabled={!s.user_id}>
-                            {s.full_name}{!s.user_id ? " (بلا حساب)" : ""}
+                          <SelectItem key={s.id} value={s.id}>
+                            {s.full_name}{!s.user_id ? " (سيُنشأ له حساب)" : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -120,7 +147,21 @@ function ClassRepsPage() {
               })}
             </div>
           )}
-          <p className="text-xs text-muted-foreground">يجب أن يملك التلميذ حساباً في النظام ليُعيَّن. تُمنح الصلاحية وتُسحب تلقائياً.</p>
+          {acct && (
+            <div className="space-y-2 rounded-md border border-primary p-3">
+              <p className="font-medium">إنشاء حساب للتلميذ: {students.find((x) => x.id === acct.studentId)?.full_name}</p>
+              <Input dir="ltr" placeholder="اسم المستخدم (لاتيني) مثال: rep2te1" value={acct.username}
+                onChange={(e) => setAcct({ ...acct, username: e.target.value })} />
+              <Input dir="ltr" placeholder="كلمة السر (8 على الأقل)" value={acct.password}
+                onChange={(e) => setAcct({ ...acct, password: e.target.value })} />
+              <div className="flex gap-2">
+                <Button disabled={busy || acct.username.length < 3 || acct.password.length < 8} onClick={createAndAssign}>إنشاء الحساب والتعيين</Button>
+                <Button variant="outline" onClick={() => setAcct(null)}>إلغاء</Button>
+              </div>
+              <p className="text-xs text-muted-foreground">احفظ اسم المستخدم وكلمة السر وسلّمهما للتلميذ؛ يدخل بهما من صفحة الدخول.</p>
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground">إن لم يكن للتلميذ حساب يُنشأ له مباشرة هنا. تُمنح الصلاحية وتُسحب تلقائياً.</p>
         </CardContent>
       </Card>
 
