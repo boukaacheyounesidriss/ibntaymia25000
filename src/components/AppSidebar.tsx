@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/use-auth";
 import { NAV_ITEMS } from "@/lib/nav-config";
+import { NAV_GROUPS, groupFor } from "@/lib/nav-groups";
 import { SIMPLE_MODE_PAGES, useSimpleMode } from "@/lib/simple-mode";
 import { Button } from "./ui/button";
 import { useRealtimeTable } from "@/lib/use-realtime-table";
@@ -72,7 +73,8 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
 };
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
+  const closeMobile = () => { if (isMobile) setOpenMobile(false); };
   const collapsed = state === "collapsed";
   const { t, i18n } = useTranslation();
   const { roles, signOut, user } = useAuth();
@@ -115,49 +117,45 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.dashboard")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu data-tour="sidebar">
-              {visibleItems.map((item) => {
-                const active = path === item.url;
-                const Icon = ICONS[item.url] ?? LayoutDashboard;
-                const showBadge =
-                  item.url === "/dashboard/inbox" && unread > 0;
-                return (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={active}>
-                      <Link
-                        to={item.url}
-                        data-tour={`nav-${item.url}`}
-                        className="flex items-center gap-2 rounded-xl"
-                      >
-                        <Icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && <span>{t(item.labelKey)}</span>}
-                        {showBadge && (
-                          <Badge
-                            variant="destructive"
-                            className="ms-auto h-5 min-w-5 justify-center rounded-full px-1.5 text-[10px]"
-                          >
-                            {unread > 99 ? "99+" : unread}
-                          </Badge>
-                        )}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={path === "/dashboard/profile"}>
-                  <Link to="/dashboard/profile" className="flex items-center gap-2 rounded-xl">
-                    <UserCog className="h-4 w-4 shrink-0" />
-                    {!collapsed && <span>الملف الشخصي</span>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {NAV_GROUPS.map((g) => {
+          const items = visibleItems.filter((it) => groupFor(it.url) === g.id);
+          if (items.length === 0) return null;
+          const hasActive = items.some((it) => it.url === path);
+          return (
+            <SidebarGroup key={g.id} className="py-1">
+              <details open={g.id === "home" || hasActive} className="group/nav">
+                <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between rounded-lg px-2 text-xs font-semibold text-muted-foreground hover:text-foreground">
+                  {!collapsed && <span>{g.label}</span>}
+                  {!collapsed && <span className="text-[10px] transition-transform group-open/nav:rotate-90">‹</span>}
+                </summary>
+                <SidebarGroupContent>
+                  <SidebarMenu data-tour={g.id === "home" ? "sidebar" : undefined}>
+                    {items.map((item) => {
+                      const active = path === item.url;
+                      const Icon = ICONS[item.url] ?? LayoutDashboard;
+                      const showBadge = item.url === "/dashboard/inbox" && unread > 0;
+                      return (
+                        <SidebarMenuItem key={item.url}>
+                          <SidebarMenuButton asChild isActive={active} className="min-h-11">
+                            <Link to={item.url} onClick={closeMobile} data-tour={`nav-${item.url}`} className="flex items-center gap-2 rounded-xl">
+                              <Icon className="h-4 w-4 shrink-0" />
+                              {!collapsed && <span className="truncate">{t(item.labelKey)}</span>}
+                              {showBadge && (
+                                <Badge variant="destructive" className="ms-auto h-5 min-w-5 justify-center rounded-full px-1.5 text-[10px]">
+                                  {unread > 99 ? "99+" : unread}
+                                </Badge>
+                              )}
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </details>
+            </SidebarGroup>
+          );
+        })}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border p-3">

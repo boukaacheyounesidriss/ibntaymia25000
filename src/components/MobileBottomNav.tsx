@@ -1,9 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarCheck, Inbox, CalendarDays, Home, Users, BarChart3, CalendarRange, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Inbox, CalendarDays, Home, Users, BarChart3, CalendarRange, Menu, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import { defaultLandingFor } from "@/lib/nav-config";
+import { useSidebar } from "@/components/ui/sidebar";
 
 type Item = { to: string; label: string; icon: LucideIcon };
 
@@ -12,6 +13,7 @@ export function MobileBottomNav() {
   const { roles, hasRole, user } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const home = defaultLandingFor(roles);
+  const { setOpenMobile } = useSidebar();
   const isMgmt = hasRole("admin") || hasRole("director") || hasRole("supervisor");
 
   const { data: unread = 0 } = useQuery({
@@ -72,6 +74,12 @@ export function MobileBottomNav() {
             </li>
           );
         })}
+        <li className="flex-1">
+          <button type="button" onClick={() => setOpenMobile(true)} className="flex min-h-14 w-full flex-col items-center justify-center gap-0.5 text-[11px] text-muted-foreground">
+            <Menu className="h-5 w-5" />
+            المزيد
+          </button>
+        </li>
       </ul>
     </nav>
   );
