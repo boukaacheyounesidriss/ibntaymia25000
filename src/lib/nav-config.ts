@@ -153,8 +153,8 @@ export const NAV_ITEMS: NavItem[] = [
   {
     url: "/dashboard/profile",
     labelKey: "nav.profile",
-    roles: ["admin"],
   },
+  { url: "/dashboard/help", labelKey: "nav.help" },
   {
     url: "/dashboard/cards/print",
     labelKey: "nav.print_cards",

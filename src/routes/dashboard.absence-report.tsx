@@ -23,8 +23,7 @@ import { HandDrawnStar } from "@/components/HandDrawnStar";
 import { MessageSquare } from "lucide-react";
 import { preparedSms, smsComposerLink, type TelegramAlert } from "@/lib/telegram-alerts";
 
-function absenceSms(r: Row, date: string) {
-  const phone = r.students?.guardian_phone;
+function absenceSms(r: Row, date: string, phone: string | null | undefined) {
   if (!phone) return null;
   const body = `إداروم — ثانوية\nالسيد/السيدة ${r.students?.guardian_name || "ولي التلميذ"}، نعلمكم بتسجيل ${STATUS_LABEL[r.status]} للتلميذ(ة) ${r.students?.full_name ?? ""}، القسم ${r.attendance_sessions?.classes?.name ?? ""}، بتاريخ ${date}${r.attendance_sessions?.period ? `، الحصة ${r.attendance_sessions.period}` : ""}.\nيرجى التواصل مع إدارة الثانوية.`;
   try { return smsComposerLink(phone, body, typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent)); } catch { return null; }
@@ -57,7 +56,7 @@ type Row = {
   status: Status;
   justified_at: string | null;
   justification_note: string | null;
-  students: { id: string; full_name: string; class_id: string | null; guardian_name: string | null; guardian_phone: string | null } | null;
+  students: { id: string; full_name: string; class_id: string | null; guardian_name: string | null; guardian_phone: string | null; father_phone: string | null; mother_phone: string | null } | null;
   attendance_sessions: {
     session_date: string;
     period: string | null;
@@ -110,7 +109,7 @@ function AbsenceReportPage() {
       const { data, error } = await supabase
         .from("attendance_records")
         .select(
-          "student_id, status, justified_at, justification_note, students(id, full_name, class_id, guardian_name, guardian_phone), attendance_sessions!inner(session_date, period, subject, classes(name))",
+          "student_id, status, justified_at, justification_note, students(id, full_name, class_id, guardian_name, guardian_phone, father_phone, mother_phone), attendance_sessions!inner(session_date, period, subject, classes(name))",
         )
         .in("status", ["absent", "late", "excused"])
         .eq("attendance_sessions.session_date", date);
@@ -353,11 +352,21 @@ function AbsenceReportPage() {
                         </Badge>
                       )}
                       {(() => {
-                        const link = absenceSms(r, date);
-                        return link ? (
-                          <Button asChild size="sm" className="gap-1">
-                            <a href={link}><MessageSquare className="h-4 w-4" /> SMS للولي</a>
-                          </Button>
+                        const st = r.students;
+                        const opts = [
+                          { label: "الأب", phone: st?.father_phone },
+                          { label: "الأم", phone: st?.mother_phone },
+                        ].filter((o) => o.phone);
+                        if (!opts.length && st?.guardian_phone) opts.push({ label: "الولي", phone: st.guardian_phone });
+                        const links = opts
+                          .map((o) => ({ ...o, link: absenceSms(r, date, o.phone) }))
+                          .filter((o) => o.link);
+                        return links.length ? (
+                          links.map((o) => (
+                            <Button key={o.label} asChild size="sm" className="gap-1">
+                              <a href={o.link!}><MessageSquare className="h-4 w-4" /> SMS {o.label}</a>
+                            </Button>
+                          ))
                         ) : (
                           <span className="text-xs text-muted-foreground">لا يوجد رقم ولي</span>
                         );

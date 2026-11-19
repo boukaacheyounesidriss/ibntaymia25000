@@ -13,10 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TrustRouteImport } from './routes/trust'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
@@ -41,6 +43,7 @@ import { Route as DashboardFreePeriodsRouteImport } from './routes/dashboard.fre
 import { Route as DashboardGateRouteImport } from './routes/dashboard.gate'
 import { Route as DashboardGateLogRouteImport } from './routes/dashboard.gate-log'
 import { Route as DashboardGuidanceRouteImport } from './routes/dashboard.guidance'
+import { Route as DashboardHelpRouteImport } from './routes/dashboard.help'
 import { Route as DashboardImportRouteImport } from './routes/dashboard.import'
 import { Route as DashboardInboxRouteImport } from './routes/dashboard.inbox'
 import { Route as DashboardLegalNoticesRouteImport } from './routes/dashboard.legal-notices'
@@ -94,6 +97,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -112,6 +120,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -233,6 +246,11 @@ const DashboardGateLogRoute = DashboardGateLogRouteImport.update({
 const DashboardGuidanceRoute = DashboardGuidanceRouteImport.update({
   id: '/guidance',
   path: '/guidance',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHelpRoute = DashboardHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardImportRoute = DashboardImportRouteImport.update({
@@ -402,10 +420,12 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -429,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/gate': typeof DashboardGateRoute
   '/dashboard/gate-log': typeof DashboardGateLogRoute
   '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/help': typeof DashboardHelpRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
@@ -467,10 +488,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -494,6 +517,7 @@ export interface FileRoutesByTo {
   '/dashboard/gate': typeof DashboardGateRoute
   '/dashboard/gate-log': typeof DashboardGateLogRoute
   '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/help': typeof DashboardHelpRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
@@ -534,10 +558,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/trust': typeof TrustRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -561,6 +587,7 @@ export interface FileRoutesById {
   '/dashboard/gate': typeof DashboardGateRoute
   '/dashboard/gate-log': typeof DashboardGateLogRoute
   '/dashboard/guidance': typeof DashboardGuidanceRoute
+  '/dashboard/help': typeof DashboardHelpRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/legal-notices': typeof DashboardLegalNoticesRoute
@@ -602,10 +629,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/support'
     | '/terms'
     | '/trust'
     | '/auth/callback'
@@ -629,6 +658,7 @@ export interface FileRouteTypes {
     | '/dashboard/gate'
     | '/dashboard/gate-log'
     | '/dashboard/guidance'
+    | '/dashboard/help'
     | '/dashboard/import'
     | '/dashboard/inbox'
     | '/dashboard/legal-notices'
@@ -667,10 +697,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/support'
     | '/terms'
     | '/trust'
     | '/auth/callback'
@@ -694,6 +726,7 @@ export interface FileRouteTypes {
     | '/dashboard/gate'
     | '/dashboard/gate-log'
     | '/dashboard/guidance'
+    | '/dashboard/help'
     | '/dashboard/import'
     | '/dashboard/inbox'
     | '/dashboard/legal-notices'
@@ -733,10 +766,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/support'
     | '/terms'
     | '/trust'
     | '/auth/callback'
@@ -760,6 +795,7 @@ export interface FileRouteTypes {
     | '/dashboard/gate'
     | '/dashboard/gate-log'
     | '/dashboard/guidance'
+    | '/dashboard/help'
     | '/dashboard/import'
     | '/dashboard/inbox'
     | '/dashboard/legal-notices'
@@ -800,10 +836,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HelpRoute: typeof HelpRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   TrustRoute: typeof TrustRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -842,6 +880,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -868,6 +913,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1036,6 +1088,13 @@ declare module '@tanstack/react-router' {
       path: '/guidance'
       fullPath: '/dashboard/guidance'
       preLoaderRoute: typeof DashboardGuidanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/help': {
+      id: '/dashboard/help'
+      path: '/help'
+      fullPath: '/dashboard/help'
+      preLoaderRoute: typeof DashboardHelpRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/import': {
@@ -1298,6 +1357,7 @@ interface DashboardRouteChildren {
   DashboardGateRoute: typeof DashboardGateRoute
   DashboardGateLogRoute: typeof DashboardGateLogRoute
   DashboardGuidanceRoute: typeof DashboardGuidanceRoute
+  DashboardHelpRoute: typeof DashboardHelpRoute
   DashboardImportRoute: typeof DashboardImportRoute
   DashboardInboxRoute: typeof DashboardInboxRoute
   DashboardLegalNoticesRoute: typeof DashboardLegalNoticesRoute
@@ -1350,6 +1410,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardGateRoute: DashboardGateRoute,
   DashboardGateLogRoute: DashboardGateLogRoute,
   DashboardGuidanceRoute: DashboardGuidanceRoute,
+  DashboardHelpRoute: DashboardHelpRoute,
   DashboardImportRoute: DashboardImportRoute,
   DashboardInboxRoute: DashboardInboxRoute,
   DashboardLegalNoticesRoute: DashboardLegalNoticesRoute,
@@ -1390,10 +1451,12 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  HelpRoute: HelpRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   TrustRoute: TrustRoute,
   AuthCallbackRoute: AuthCallbackRoute,

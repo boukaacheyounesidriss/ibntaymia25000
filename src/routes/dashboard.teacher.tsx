@@ -8,6 +8,7 @@ import { useRealtimeTable } from "@/lib/use-realtime-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { TeacherPinCard } from "@/components/TeacherPinCard";
 
 export const Route = createFileRoute("/dashboard/teacher")({
   head: () => ({
@@ -77,6 +78,8 @@ function TeacherDashboard() {
         <QuickAction to="/dashboard/exams" icon={FilePenLine} label={t("nav.exams")} />
         <QuickAction to="/dashboard/students" icon={Users} label={t("nav.students")} />
       </div>
+
+      <TeacherPinCard />
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>

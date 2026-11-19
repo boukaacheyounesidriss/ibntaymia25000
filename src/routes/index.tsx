@@ -270,6 +270,8 @@ function Index() {
             <Link to="/about" className="hover:text-foreground">
               {t("nav.about")}
             </Link>
+            <Link to="/support" className="hover:text-foreground">الدعم</Link>
+            <Link to="/help" className="hover:text-foreground">الأسئلة الشائعة</Link>
             <Link to="/trust" className="hover:text-foreground">
               الثقة والأمان
             </Link>

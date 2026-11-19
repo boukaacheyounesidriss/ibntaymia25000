@@ -29,8 +29,8 @@ const MAP: Record<string, NavGroupId> = {
   "/dashboard/reports": "students",
   "/dashboard/import": "system", "/dashboard/users": "system", "/dashboard/permissions": "system",
   "/dashboard/data": "system", "/dashboard/console": "system", "/dashboard/diagnostics": "system",
-  "/dashboard/profile": "system", "/dashboard/settings": "system",
-  "/dashboard/me": "account", "/dashboard/appearance": "account", "/dashboard/offline": "account",
+  "/dashboard/settings": "system",
+  "/dashboard/me": "account", "/dashboard/profile": "account", "/dashboard/help": "account", "/dashboard/appearance": "account", "/dashboard/offline": "account",
 };
 
 export function groupFor(url: string): NavGroupId {

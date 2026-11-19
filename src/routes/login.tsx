@@ -200,6 +200,10 @@ function LoginPage() {
                 <Link to="/forgot-password" className="text-xs text-primary hover:underline">
                   نسيت كلمة المرور؟
                 </Link>
+                <span className="mx-2 text-xs text-muted-foreground">·</span>
+                <Link to="/support" className="text-xs text-primary hover:underline">الدعم</Link>
+                <span className="mx-2 text-xs text-muted-foreground">·</span>
+                <Link to="/help" className="text-xs text-primary hover:underline">الأسئلة الشائعة</Link>
               </div>
             </form>
 
