@@ -1,3 +1,4 @@
+import { ParentCallButtons } from "@/components/ParentCallButtons";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FileSpreadsheet, FileText } from "lucide-react";
@@ -39,6 +40,9 @@ type Row = {
   date_of_birth: string | null;
   fake_email: string | null;
   fake_phone: string | null;
+  father_phone: string | null;
+  mother_phone: string | null;
+  guardian_phone: string | null;
   classes: { name: string } | null;
 };
 
@@ -51,7 +55,7 @@ function StudentsPage() {
     queryFn: async (): Promise<Row[]> => {
       const { data, error } = await supabase
         .from("students")
-        .select("id, full_name, gender, date_of_birth, fake_email, fake_phone, classes(name)")
+        .select("id, full_name, gender, date_of_birth, fake_email, fake_phone, father_phone, mother_phone, guardian_phone, classes(name)")
         .order("full_name");
       if (error) throw error;
       return (data as unknown as Row[]) ?? [];
@@ -150,6 +154,7 @@ function StudentsPage() {
                     <TableCell className="text-xs ltr">{r.fake_phone}</TableCell>
                     <TableCell className="text-end">
                       <ParentLinkDialog studentId={r.id} studentName={r.full_name} />
+                      <ParentCallButtons s={r} />
                     </TableCell>
                   </TableRow>
                 ))}

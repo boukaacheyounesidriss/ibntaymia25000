@@ -1,3 +1,4 @@
+import { ParentCallButtons } from "@/components/ParentCallButtons";
 import { createFileRoute } from "@tanstack/react-router";
 import { friendlyError } from "@/lib/friendly-error";
 import { useQuery } from "@tanstack/react-query";
@@ -371,6 +372,7 @@ function AbsenceReportPage() {
                           <span className="text-xs text-muted-foreground">لا يوجد رقم ولي</span>
                         );
                       })()}
+                      <ParentCallButtons s={r.students} />
                     </div>
                   </div>
                 ))}

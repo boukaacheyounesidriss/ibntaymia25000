@@ -426,6 +426,7 @@ export type Database = {
         Row: {
           branch: string | null
           created_at: string
+          head_teacher_id: string | null
           id: string
           level: string | null
           name: string
@@ -433,6 +434,7 @@ export type Database = {
         Insert: {
           branch?: string | null
           created_at?: string
+          head_teacher_id?: string | null
           id?: string
           level?: string | null
           name: string
@@ -440,6 +442,7 @@ export type Database = {
         Update: {
           branch?: string | null
           created_at?: string
+          head_teacher_id?: string | null
           id?: string
           level?: string | null
           name?: string
@@ -973,6 +976,8 @@ export type Database = {
           reviewed_by: string | null
           status: string
           student_id: string
+          target_kind: string
+          target_teacher_id: string | null
           updated_at: string
         }
         Insert: {
@@ -987,6 +992,8 @@ export type Database = {
           reviewed_by?: string | null
           status?: string
           student_id: string
+          target_kind?: string
+          target_teacher_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1001,6 +1008,8 @@ export type Database = {
           reviewed_by?: string | null
           status?: string
           student_id?: string
+          target_kind?: string
+          target_teacher_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1718,6 +1727,83 @@ export type Database = {
         }
         Relationships: []
       }
+      teacher_posts: {
+        Row: {
+          body: string | null
+          class_id: string | null
+          created_at: string
+          due_date: string | null
+          id: string
+          kind: string
+          link_url: string | null
+          teacher_id: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          class_id?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          kind?: string
+          link_url?: string | null
+          teacher_id?: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          class_id?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          kind?: string
+          link_url?: string | null
+          teacher_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_posts_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_reception_hours: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          note: string | null
+          place: string | null
+          start_time: string
+          teacher_id: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          note?: string | null
+          place?: string | null
+          start_time: string
+          teacher_id: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          note?: string | null
+          place?: string | null
+          start_time?: string
+          teacher_id?: string
+          weekday?: number
+        }
+        Relationships: []
+      }
       telegram_alerts: {
         Row: {
           class_name: string
@@ -1938,6 +2024,19 @@ export type Database = {
           id: string
         }[]
       }
+      my_children_teachers: {
+        Args: never
+        Returns: {
+          class_name: string
+          is_head: boolean
+          reception: Json
+          student_id: string
+          student_name: string
+          subject: string
+          teacher_id: string
+          teacher_name: string
+        }[]
+      }
       owner_set_account_roles: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
@@ -1958,6 +2057,10 @@ export type Database = {
         }
         Returns: number
       }
+      set_class_head_teacher: {
+        Args: { _class: string; _teacher: string }
+        Returns: undefined
+      }
       set_my_attendance_pin: { Args: { _pin: string }; Returns: undefined }
       set_student_enrollment: {
         Args: { _reason: string; _status: string; _student: string }
@@ -1976,6 +2079,10 @@ export type Database = {
           student_id: string
           unjustified_days: number
         }[]
+      }
+      teaches_class: {
+        Args: { _class: string; _teacher: string }
+        Returns: boolean
       }
     }
     Enums: {

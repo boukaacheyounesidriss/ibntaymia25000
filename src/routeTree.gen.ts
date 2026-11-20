@@ -30,6 +30,7 @@ import { Route as DashboardAttendanceRouteImport } from './routes/dashboard.atte
 import { Route as DashboardBehaviorRouteImport } from './routes/dashboard.behavior'
 import { Route as DashboardCalendarRouteImport } from './routes/dashboard.calendar'
 import { Route as DashboardCardsRouteImport } from './routes/dashboard.cards'
+import { Route as DashboardClassAttendanceRouteImport } from './routes/dashboard.class-attendance'
 import { Route as DashboardClassRepAttendanceRouteImport } from './routes/dashboard.class-rep-attendance'
 import { Route as DashboardClassRepsRouteImport } from './routes/dashboard.class-reps'
 import { Route as DashboardConsoleRouteImport } from './routes/dashboard.console'
@@ -67,6 +68,7 @@ import { Route as DashboardStudentsRouteImport } from './routes/dashboard.studen
 import { Route as DashboardSubstitutionsRouteImport } from './routes/dashboard.substitutions'
 import { Route as DashboardSupervisorRouteImport } from './routes/dashboard.supervisor'
 import { Route as DashboardTeacherRouteImport } from './routes/dashboard.teacher'
+import { Route as DashboardTeacherSpaceRouteImport } from './routes/dashboard.teacher-space'
 import { Route as DashboardTeachersRouteImport } from './routes/dashboard.teachers'
 import { Route as DashboardTodayRouteImport } from './routes/dashboard.today'
 import { Route as DashboardTripsRouteImport } from './routes/dashboard.trips'
@@ -182,6 +184,12 @@ const DashboardCardsRoute = DashboardCardsRouteImport.update({
   path: '/cards',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardClassAttendanceRoute =
+  DashboardClassAttendanceRouteImport.update({
+    id: '/class-attendance',
+    path: '/class-attendance',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardClassRepAttendanceRoute =
   DashboardClassRepAttendanceRouteImport.update({
     id: '/class-rep-attendance',
@@ -368,6 +376,11 @@ const DashboardTeacherRoute = DashboardTeacherRouteImport.update({
   path: '/teacher',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTeacherSpaceRoute = DashboardTeacherSpaceRouteImport.update({
+  id: '/teacher-space',
+  path: '/teacher-space',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardTeachersRoute = DashboardTeachersRouteImport.update({
   id: '/teachers',
   path: '/teachers',
@@ -436,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -473,6 +487,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teacher-space': typeof DashboardTeacherSpaceRoute
   '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
@@ -504,6 +519,7 @@ export interface FileRoutesByTo {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -541,6 +557,7 @@ export interface FileRoutesByTo {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teacher-space': typeof DashboardTeacherSpaceRoute
   '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
@@ -574,6 +591,7 @@ export interface FileRoutesById {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -611,6 +629,7 @@ export interface FileRoutesById {
   '/dashboard/substitutions': typeof DashboardSubstitutionsRoute
   '/dashboard/supervisor': typeof DashboardSupervisorRoute
   '/dashboard/teacher': typeof DashboardTeacherRoute
+  '/dashboard/teacher-space': typeof DashboardTeacherSpaceRoute
   '/dashboard/teachers': typeof DashboardTeachersRoute
   '/dashboard/today': typeof DashboardTodayRoute
   '/dashboard/trips': typeof DashboardTripsRoute
@@ -645,6 +664,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/class-attendance'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -682,6 +702,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teacher-space'
     | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
@@ -713,6 +734,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/class-attendance'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -750,6 +772,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teacher-space'
     | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
@@ -782,6 +805,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/class-attendance'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -819,6 +843,7 @@ export interface FileRouteTypes {
     | '/dashboard/substitutions'
     | '/dashboard/supervisor'
     | '/dashboard/teacher'
+    | '/dashboard/teacher-space'
     | '/dashboard/teachers'
     | '/dashboard/today'
     | '/dashboard/trips'
@@ -997,6 +1022,13 @@ declare module '@tanstack/react-router' {
       path: '/cards'
       fullPath: '/dashboard/cards'
       preLoaderRoute: typeof DashboardCardsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/class-attendance': {
+      id: '/dashboard/class-attendance'
+      path: '/class-attendance'
+      fullPath: '/dashboard/class-attendance'
+      preLoaderRoute: typeof DashboardClassAttendanceRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/class-rep-attendance': {
@@ -1258,6 +1290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTeacherRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/teacher-space': {
+      id: '/dashboard/teacher-space'
+      path: '/teacher-space'
+      fullPath: '/dashboard/teacher-space'
+      preLoaderRoute: typeof DashboardTeacherSpaceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/teachers': {
       id: '/dashboard/teachers'
       path: '/teachers'
@@ -1344,6 +1383,7 @@ interface DashboardRouteChildren {
   DashboardBehaviorRoute: typeof DashboardBehaviorRoute
   DashboardCalendarRoute: typeof DashboardCalendarRoute
   DashboardCardsRoute: typeof DashboardCardsRouteWithChildren
+  DashboardClassAttendanceRoute: typeof DashboardClassAttendanceRoute
   DashboardClassRepAttendanceRoute: typeof DashboardClassRepAttendanceRoute
   DashboardClassRepsRoute: typeof DashboardClassRepsRoute
   DashboardConsoleRoute: typeof DashboardConsoleRoute
@@ -1381,6 +1421,7 @@ interface DashboardRouteChildren {
   DashboardSubstitutionsRoute: typeof DashboardSubstitutionsRoute
   DashboardSupervisorRoute: typeof DashboardSupervisorRoute
   DashboardTeacherRoute: typeof DashboardTeacherRoute
+  DashboardTeacherSpaceRoute: typeof DashboardTeacherSpaceRoute
   DashboardTeachersRoute: typeof DashboardTeachersRoute
   DashboardTodayRoute: typeof DashboardTodayRoute
   DashboardTripsRoute: typeof DashboardTripsRoute
@@ -1397,6 +1438,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBehaviorRoute: DashboardBehaviorRoute,
   DashboardCalendarRoute: DashboardCalendarRoute,
   DashboardCardsRoute: DashboardCardsRouteWithChildren,
+  DashboardClassAttendanceRoute: DashboardClassAttendanceRoute,
   DashboardClassRepAttendanceRoute: DashboardClassRepAttendanceRoute,
   DashboardClassRepsRoute: DashboardClassRepsRoute,
   DashboardConsoleRoute: DashboardConsoleRoute,
@@ -1434,6 +1476,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSubstitutionsRoute: DashboardSubstitutionsRoute,
   DashboardSupervisorRoute: DashboardSupervisorRoute,
   DashboardTeacherRoute: DashboardTeacherRoute,
+  DashboardTeacherSpaceRoute: DashboardTeacherSpaceRoute,
   DashboardTeachersRoute: DashboardTeachersRoute,
   DashboardTodayRoute: DashboardTodayRoute,
   DashboardTripsRoute: DashboardTripsRoute,

@@ -148,6 +148,13 @@
       "when": 1794961951490,
       "tag": "0020_protect_whitelist_role_assignment",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795159823735,
+      "tag": "0021_teacher_hub_reception_appointments",
+      "breakpoints": true
     }
   ]
 }
