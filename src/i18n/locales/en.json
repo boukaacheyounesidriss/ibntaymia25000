@@ -51,7 +51,10 @@
     "class_kiosk": "Class attendance",
     "class_reps": "Class representatives",
     "teachers_dir": "Teachers",
-    "parent_phones": "Parent phones"
+    "parent_phones": "Parent phones",
+    "class_attendance": "My class attendance",
+    "teacher_space": "Teacher space",
+    "my_teachers": "Teachers & lessons"
   },
   "landing": {
     "hero_title": "Smart, secure school management — works offline",

@@ -18,6 +18,9 @@ export const NAV_ITEMS: NavItem[] = [
   { url: "/dashboard/teachers", labelKey: "nav.teachers_dir", roles: ["admin", "director", "supervisor"] },
   { url: "/dashboard/my-attendance", labelKey: "nav.my_attendance", roles: ["parent", "student"] },
   { url: "/dashboard/today", labelKey: "nav.today", roles: ["teacher"] },
+  { url: "/dashboard/class-attendance", labelKey: "nav.class_attendance", roles: ["teacher"] },
+  { url: "/dashboard/teacher-space", labelKey: "nav.teacher_space", roles: ["teacher"] },
+  { url: "/dashboard/my-teachers", labelKey: "nav.my_teachers", roles: ["parent", "student"] },
   { url: "/dashboard/weekly", labelKey: "nav.weekly", roles: ["admin", "director", "supervisor"] },
   {
     url: "/dashboard/students",

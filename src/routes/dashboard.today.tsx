@@ -161,7 +161,7 @@ function TodayPage() {
                       مسجَّل · {absent} غائب
                     </Badge>
                   ) : (
-                    <Link to="/dashboard/attendance">
+                    <Link to="/dashboard/class-attendance">
                       <Button size="lg" className="min-h-11">
                         تسجيل الحضور
                       </Button>

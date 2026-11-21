@@ -123,6 +123,7 @@ function ClassRepsPage() {
             <SelectTrigger className="max-w-sm"><SelectValue placeholder="اختر القسم" /></SelectTrigger>
             <SelectContent>{classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
           </Select>
+          {classId && <HeadTeacherPicker classId={classId} teachers={teachers} />}
           {classId && (
             <div className="grid gap-4 sm:grid-cols-2">
               {(["rep", "deputy"] as Kind[]).map((kind) => {
@@ -180,6 +181,40 @@ function ClassRepsPage() {
           )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function HeadTeacherPicker({ classId, teachers }: { classId: string; teachers: { id: string; full_name: string }[] }) {
+  const qc = useQueryClient();
+  const { data } = useQuery({
+    queryKey: ["class-head", classId],
+    queryFn: async () => {
+      const [{ data: c }, { data: sl }] = await Promise.all([
+        supabase.from("classes").select("head_teacher_id").eq("id", classId).single(),
+        supabase.from("schedule_slots").select("teacher_id, subject").eq("class_id", classId).eq("is_active", true).not("teacher_id", "is", null),
+      ]);
+      const m = new Map<string, string>();
+      (sl ?? []).forEach((r) => { if (r.teacher_id && !m.has(r.teacher_id)) m.set(r.teacher_id, r.subject); });
+      return { head: c?.head_teacher_id ?? null, list: [...m].map(([id, subject]) => ({ id, subject, name: teachers.find((t) => t.id === id)?.full_name ?? "أستاذ" })) };
+    },
+  });
+  async function set(id: string) {
+    const { error } = await supabase.rpc("set_class_head_teacher", { _class: classId, _teacher: id });
+    if (error) return toast.error(clean(error.message));
+    toast.success("تم تعيين الأستاذ الرئيسي للقسم");
+    qc.invalidateQueries({ queryKey: ["class-head", classId] });
+  }
+  const cur = data?.list.find((t) => t.id === data.head);
+  return (
+    <div className="space-y-2 rounded-md border p-3">
+      <p className="font-medium">الأستاذ الرئيسي للقسم</p>
+      <p className="text-sm text-muted-foreground">الحالي: {cur ? `${cur.name} — ${cur.subject}` : "غير معيّن"}</p>
+      <Select value="" onValueChange={set}>
+        <SelectTrigger><SelectValue placeholder="اختر من أساتذة هذا القسم" /></SelectTrigger>
+        <SelectContent>{(data?.list ?? []).map((t) => <SelectItem key={t.id} value={t.id}>{t.name} — {t.subject}</SelectItem>)}</SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground">تظهر فقط أسماء الأساتذة الذين يدرّسون هذا القسم حسب جدول التوقيت.</p>
     </div>
   );
 }

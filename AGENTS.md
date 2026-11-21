@@ -35,3 +35,4 @@ use the editor.
 - Authorize role management through the database's verified immutable owner identity; never through email, editable metadata or an administrator/developer role, to prevent delegation and account takeover.
 - Keep built-in enum roles and additive custom role definitions separate; custom roles grant only existing permission capabilities, never implicit built-in role membership or wider data visibility.
 - Change built-in account roles atomically through the owner-authorized database function and protect owner credentials in every account administration path.
+- Teachers' class membership (class_teachers) is auto-synced from schedule_slots by trigger; teacher-scoped RLS on students depends on it.

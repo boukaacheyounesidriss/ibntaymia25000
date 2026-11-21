@@ -51,7 +51,10 @@
     "class_kiosk": "Présence de la classe",
     "class_reps": "Responsables de classe",
     "teachers_dir": "Enseignants",
-    "parent_phones": "Téléphones des parents"
+    "parent_phones": "Téléphones des parents",
+    "class_attendance": "Présence de ma séance",
+    "teacher_space": "Espace enseignant",
+    "my_teachers": "Enseignants et cours"
   },
   "landing": {
     "hero_title": "Une gestion scolaire intelligente, sécurisée, qui fonctionne hors ligne",

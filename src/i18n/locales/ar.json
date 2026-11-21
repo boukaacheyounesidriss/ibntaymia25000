@@ -51,7 +51,10 @@
     "class_kiosk": "تسجيل حضور القسم",
     "class_reps": "مسؤولو الأقسام",
     "teachers_dir": "الأساتذة والإسناد",
-    "parent_phones": "أرقام الأولياء"
+    "parent_phones": "أرقام الأولياء",
+    "class_attendance": "حضور حصتي",
+    "teacher_space": "فضاء الأستاذ",
+    "my_teachers": "الأساتذة والدروس"
   },
   "landing": {
     "hero_title": "إدارة مدرسية ذكية، آمنة، وتعمل بدون إنترنت",

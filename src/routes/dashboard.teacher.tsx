@@ -73,7 +73,8 @@ function TeacherDashboard() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <QuickAction to="/dashboard/attendance" icon={CalendarCheck} label={t("nav.attendance")} />
+        <QuickAction to="/dashboard/class-attendance" icon={CalendarCheck} label={t("nav.class_attendance")} />
+        <QuickAction to="/dashboard/teacher-space" icon={FilePenLine} label={t("nav.teacher_space")} />
         <QuickAction to="/dashboard/behavior" icon={Award} label={t("nav.behavior")} />
         <QuickAction to="/dashboard/exams" icon={FilePenLine} label={t("nav.exams")} />
         <QuickAction to="/dashboard/students" icon={Users} label={t("nav.students")} />
