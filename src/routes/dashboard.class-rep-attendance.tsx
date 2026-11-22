@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScopeTabs } from "@/components/ScopeTabs";
+import { defaultScope, SCOPE_LABEL, studentsForScope, type Scope } from "@/lib/subgroups";
 
 export const Route = createFileRoute("/dashboard/class-rep-attendance")({
   component: KioskPage,
@@ -28,8 +30,8 @@ type Ctx = {
   class_name: string;
   kind: "rep" | "deputy";
   today: string;
-  slot: null | { id: string; subject: string | null; start: string; end: string; teacher_name: string; already_done: boolean };
-  students: { id: string; name: string }[];
+  slot: null | { id: string; subject: string | null; start: string; end: string; teacher_name: string; already_done: boolean; group_label: string };
+  students: { id: string; name: string; subgroup: string | null }[];
 };
 type Mark = "present" | "absent" | "late";
 const clean = (m: string) => m.replace(/^[A-Z_]+:\s*/, "");
@@ -41,6 +43,7 @@ function KioskPage() {
   const [pin, setPin] = useState("");
   const [busy, setBusy] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [scopePick, setScopePick] = useState<Scope | null>(null);
 
   const { data: ctx, error, isLoading, refetch } = useQuery({
     queryKey: ["kiosk-context"],
@@ -61,10 +64,11 @@ function KioskPage() {
 
   async function submit() {
     if (!ctx?.slot) return;
+    const scope = scopePick ?? defaultScope(ctx.slot.group_label);
     setBusy(true);
     const absent = Object.entries(marks).filter(([, v]) => v === "absent").map(([k]) => k);
     const late = Object.entries(marks).filter(([, v]) => v === "late").map(([k]) => k);
-    const { data, error } = await supabase.rpc("kiosk_submit_attendance", { _slot_id: ctx.slot.id, _absent: absent, _late: late, _pin: pin });
+    const { data, error } = await supabase.rpc("kiosk_submit_attendance", { _slot_id: ctx.slot.id, _absent: absent, _late: late, _pin: pin, _scope: scope });
     setBusy(false);
     setPin("");
     if (error) return toast.error(clean(error.message));
@@ -75,6 +79,7 @@ function KioskPage() {
     }
     setPinOpen(false);
     setMarks({});
+    setScopePick(null);
     setLocked(true);
     toast.success("تم إمضاء الحضور باسم الأستاذ");
     qc.invalidateQueries({ queryKey: ["kiosk-context"] });
@@ -97,6 +102,8 @@ function KioskPage() {
     );
   }
 
+  const scope: Scope = scopePick ?? defaultScope(ctx.slot?.group_label);
+  const shown = studentsForScope(ctx.students, scope);
   const counts = { absent: 0, late: 0 };
   Object.values(marks).forEach((v) => { if (v !== "present") counts[v]++; });
 
@@ -123,9 +130,12 @@ function KioskPage() {
 
       {ctx.slot && (
         <>
+          <ScopeTabs value={scope} onChange={(v) => { setScopePick(v); setMarks({}); }} slotGroup={ctx.slot.group_label ?? "all"} />
+          {scope === "merged" && <p className="rounded-md bg-accent/20 p-2 text-xs">حصة مجمّعة استثنائياً: يُسجَّل حضور الفوجين معاً.</p>}
+          {!shown.length && <p className="text-sm text-destructive">لم يُوزَّع تلاميذ {SCOPE_LABEL[scope]} بعد. يوزّعهم الأستاذ أو الإدارة من صفحة «أفواج الأعمال التطبيقية».</p>}
           <p className="text-sm text-muted-foreground">اضغط على اسم التلميذ: مرة = غائب، مرتين = متأخر، ثلاثاً = حاضر.</p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {ctx.students.map((s, i) => {
+            {shown.map((s, i) => {
               const m = marks[s.id] ?? "present";
               return (
                 <button key={s.id} type="button" onClick={() => cycle(s.id)}
@@ -137,8 +147,8 @@ function KioskPage() {
             })}
           </div>
           <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 rounded-md border bg-background p-3">
-            <span className="text-sm">الغائبون: {counts.absent} — المتأخرون: {counts.late} — الحاضرون: {ctx.students.length - counts.absent - counts.late}</span>
-            <Button onClick={() => setPinOpen(true)}><Lock className="me-2 h-4 w-4" /> إمضاء الأستاذ</Button>
+            <span className="text-sm">الغائبون: {counts.absent} — المتأخرون: {counts.late} — الحاضرون: {shown.length - counts.absent - counts.late}</span>
+            <Button disabled={!shown.length} onClick={() => setPinOpen(true)}><Lock className="me-2 h-4 w-4" /> إمضاء الأستاذ</Button>
           </div>
         </>
       )}

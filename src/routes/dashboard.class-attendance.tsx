@@ -9,6 +9,9 @@ import { friendlyError } from "@/lib/friendly-error";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@tanstack/react-router";
+import { ScopeTabs } from "@/components/ScopeTabs";
+import { defaultScope, SCOPE_LABEL, studentsForScope, type Scope } from "@/lib/subgroups";
 
 export const Route = createFileRoute("/dashboard/class-attendance")({
   component: TeacherQuickAttendance,
@@ -25,7 +28,7 @@ export const Route = createFileRoute("/dashboard/class-attendance")({
 });
 
 type Mark = "present" | "absent" | "late";
-type Slot = { id: string; class_id: string; subject: string; start_time: string; end_time: string; period_no: number | null; room: string | null; classes: { name: string } | null };
+type Slot = { id: string; class_id: string; subject: string; start_time: string; end_time: string; period_no: number | null; room: string | null; group_label: string; classes: { name: string } | null };
 
 function localDate() {
   const d = new Date();
@@ -48,7 +51,7 @@ function TeacherQuickAttendance() {
     enabled: !!user,
     queryFn: async (): Promise<Slot[]> => {
       const { data, error } = await supabase.from("schedule_slots")
-        .select("id, class_id, subject, start_time, end_time, period_no, room, classes(name)")
+        .select("id, class_id, subject, start_time, end_time, period_no, room, group_label, classes(name)")
         .eq("teacher_id", user!.id).eq("weekday", weekday).eq("is_active", true).order("start_time");
       if (error) throw error;
       return (data ?? []) as unknown as Slot[];
@@ -59,7 +62,7 @@ function TeacherQuickAttendance() {
     queryKey: ["qa-done", user?.id, today],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("attendance_sessions").select("id, slot_id, class_id, period").eq("session_date", today);
+      const { data } = await supabase.from("attendance_sessions").select("id, slot_id, class_id, period, group_scope").eq("session_date", today);
       return data ?? [];
     },
   });
@@ -72,20 +75,24 @@ function TeacherQuickAttendance() {
   }, [slots, slotId, nowHM]);
 
   const slot = slots.find((s) => s.id === slotId) ?? null;
-  const isDone = (s: Slot) => done.some((d) => d.slot_id === s.id || (d.class_id === s.class_id && d.period === periodOf(s)));
+  const [scope, setScope] = useState<Scope>("all");
+  const isDone = (s: Slot, sc: Scope = defaultScope(s.group_label)) => done.some((d) => d.class_id === s.class_id && d.period === periodOf(s)
+    && (sc === "all" || sc === "merged" || d.group_scope === "all" || d.group_scope === "merged" || d.group_scope === sc));
 
-  const { data: students = [] } = useQuery({
+  const { data: allStudents = [] } = useQuery({
     queryKey: ["qa-students", slot?.class_id],
     enabled: !!slot,
     queryFn: async () => {
-      const { data, error } = await supabase.from("students").select("id, full_name")
+      const { data, error } = await supabase.from("students").select("id, full_name, subgroup")
         .eq("class_id", slot!.class_id).eq("enrollment_status", "active").order("full_name");
       if (error) throw error;
       return data ?? [];
     },
   });
 
-  useEffect(() => setMarks({}), [slotId]);
+  useEffect(() => { setMarks({}); if (slot) setScope(defaultScope(slot.group_label)); }, [slotId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const students = useMemo(() => studentsForScope(allStudents, scope), [allStudents, scope]);
+  const unassigned = allStudents.filter((s) => !s.subgroup).length;
   const counts = useMemo(() => {
     const v = Object.values(marks);
     return { absent: v.filter((x) => x === "absent").length, late: v.filter((x) => x === "late").length };
@@ -98,11 +105,13 @@ function TeacherQuickAttendance() {
 
   async function save() {
     if (!slot || !user) return;
-    if (!confirm(`تأكيد: ${students.length - counts.absent - counts.late} حاضر، ${counts.absent} غائب، ${counts.late} متأخر؟`)) return;
+    if (!students.length) return toast.error("لا تلاميذ في هذا الفوج. وزّع الأفواج أولاً");
+    if (!confirm(`${SCOPE_LABEL[scope]} — تأكيد: ${students.length - counts.absent - counts.late} حاضر، ${counts.absent} غائب، ${counts.late} متأخر؟`)) return;
     setBusy(true);
     const { data: sess, error } = await supabase.from("attendance_sessions").insert({
       class_id: slot.class_id, teacher_id: user.id, session_date: today, period: periodOf(slot),
-      subject: slot.subject, slot_id: slot.id, session_type: "regular",
+      subject: slot.subject, slot_id: slot.id, session_type: "regular", group_scope: scope,
+      note: scope === "merged" ? "حصة مجمّعة استثنائياً للفوجين" : null,
     } as never).select("id").single();
     if (error) { setBusy(false); return toast.error(error.code === "23505" ? "حضور هذه الحصة مسجل مسبقاً" : friendlyError(error)); }
     const rows = students.map((s) => ({ session_id: sess.id, student_id: s.id, status: marks[s.id] ?? "present" }));
@@ -152,7 +161,12 @@ function TeacherQuickAttendance() {
             </CardContent>
           </Card>
 
-          {isDone(slot) ? (
+          <ScopeTabs value={scope} onChange={(v) => { setScope(v); setMarks({}); }} slotGroup={slot.group_label} />
+          {scope === "merged" && <p className="rounded-lg bg-accent/20 p-2 text-xs">حصة استثنائية: يُسجَّل حضور القسم كاملاً (غياب أستاذ الفوج الآخر مثلاً) وتُدوَّن ملاحظة للإدارة.</p>}
+          {(scope === "g1" || scope === "g2") && unassigned > 0 && (
+            <p className="rounded-lg border border-destructive/40 p-2 text-xs">{unassigned} تلميذ غير موزَّع على الأفواج. <Link to="/dashboard/class-groups" className="font-semibold underline">وزّع الأفواج</Link></p>
+          )}
+          {isDone(slot, scope) ? (
             <Card><CardContent className="flex items-center gap-2 pt-4 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" />حضور هذه الحصة مسجّل. للتصحيح استعمل صفحة تسجيل الحضور الكاملة.</CardContent></Card>
           ) : (
             <>

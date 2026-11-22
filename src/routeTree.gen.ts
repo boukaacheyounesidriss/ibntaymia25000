@@ -31,6 +31,7 @@ import { Route as DashboardBehaviorRouteImport } from './routes/dashboard.behavi
 import { Route as DashboardCalendarRouteImport } from './routes/dashboard.calendar'
 import { Route as DashboardCardsRouteImport } from './routes/dashboard.cards'
 import { Route as DashboardClassAttendanceRouteImport } from './routes/dashboard.class-attendance'
+import { Route as DashboardClassGroupsRouteImport } from './routes/dashboard.class-groups'
 import { Route as DashboardClassRepAttendanceRouteImport } from './routes/dashboard.class-rep-attendance'
 import { Route as DashboardClassRepsRouteImport } from './routes/dashboard.class-reps'
 import { Route as DashboardConsoleRouteImport } from './routes/dashboard.console'
@@ -191,6 +192,11 @@ const DashboardClassAttendanceRoute =
     path: '/class-attendance',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardClassGroupsRoute = DashboardClassGroupsRouteImport.update({
+  id: '/class-groups',
+  path: '/class-groups',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardClassRepAttendanceRoute =
   DashboardClassRepAttendanceRouteImport.update({
     id: '/class-rep-attendance',
@@ -456,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
+  '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -527,6 +534,7 @@ export interface FileRoutesByTo {
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
+  '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -600,6 +608,7 @@ export interface FileRoutesById {
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
+  '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
   '/dashboard/class-reps': typeof DashboardClassRepsRoute
   '/dashboard/console': typeof DashboardConsoleRoute
@@ -674,6 +683,7 @@ export interface FileRouteTypes {
     | '/dashboard/calendar'
     | '/dashboard/cards'
     | '/dashboard/class-attendance'
+    | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -745,6 +755,7 @@ export interface FileRouteTypes {
     | '/dashboard/calendar'
     | '/dashboard/cards'
     | '/dashboard/class-attendance'
+    | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -817,6 +828,7 @@ export interface FileRouteTypes {
     | '/dashboard/calendar'
     | '/dashboard/cards'
     | '/dashboard/class-attendance'
+    | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
     | '/dashboard/class-reps'
     | '/dashboard/console'
@@ -1041,6 +1053,13 @@ declare module '@tanstack/react-router' {
       path: '/class-attendance'
       fullPath: '/dashboard/class-attendance'
       preLoaderRoute: typeof DashboardClassAttendanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/class-groups': {
+      id: '/dashboard/class-groups'
+      path: '/class-groups'
+      fullPath: '/dashboard/class-groups'
+      preLoaderRoute: typeof DashboardClassGroupsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/class-rep-attendance': {
@@ -1403,6 +1422,7 @@ interface DashboardRouteChildren {
   DashboardCalendarRoute: typeof DashboardCalendarRoute
   DashboardCardsRoute: typeof DashboardCardsRouteWithChildren
   DashboardClassAttendanceRoute: typeof DashboardClassAttendanceRoute
+  DashboardClassGroupsRoute: typeof DashboardClassGroupsRoute
   DashboardClassRepAttendanceRoute: typeof DashboardClassRepAttendanceRoute
   DashboardClassRepsRoute: typeof DashboardClassRepsRoute
   DashboardConsoleRoute: typeof DashboardConsoleRoute
@@ -1459,6 +1479,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardCalendarRoute: DashboardCalendarRoute,
   DashboardCardsRoute: DashboardCardsRouteWithChildren,
   DashboardClassAttendanceRoute: DashboardClassAttendanceRoute,
+  DashboardClassGroupsRoute: DashboardClassGroupsRoute,
   DashboardClassRepAttendanceRoute: DashboardClassRepAttendanceRoute,
   DashboardClassRepsRoute: DashboardClassRepsRoute,
   DashboardConsoleRoute: DashboardConsoleRoute,

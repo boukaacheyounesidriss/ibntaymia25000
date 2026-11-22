@@ -195,6 +195,7 @@ export type Database = {
         Row: {
           class_id: string
           created_at: string
+          group_scope: string
           id: string
           note: string | null
           period: string | null
@@ -208,6 +209,7 @@ export type Database = {
         Insert: {
           class_id: string
           created_at?: string
+          group_scope?: string
           id?: string
           note?: string | null
           period?: string | null
@@ -221,6 +223,7 @@ export type Database = {
         Update: {
           class_id?: string
           created_at?: string
+          group_scope?: string
           id?: string
           note?: string | null
           period?: string | null
@@ -1521,6 +1524,7 @@ export type Database = {
           struck_off_at: string | null
           struck_off_by: string | null
           struck_off_reason: string | null
+          subgroup: string | null
           updated_at: string
           user_id: string | null
         }
@@ -1544,6 +1548,7 @@ export type Database = {
           struck_off_at?: string | null
           struck_off_by?: string | null
           struck_off_reason?: string | null
+          subgroup?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -1567,6 +1572,7 @@ export type Database = {
           struck_off_at?: string | null
           struck_off_by?: string | null
           struck_off_reason?: string | null
+          subgroup?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -1988,6 +1994,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_split_class_subgroups: { Args: { _class: string }; Returns: number }
       get_overview_stats: { Args: never; Returns: Json }
       get_user_roles: {
         Args: { _user_id: string }
@@ -2013,6 +2020,7 @@ export type Database = {
           _absent: string[]
           _late: string[]
           _pin: string
+          _scope?: string
           _slot_id: string
         }
         Returns: Json
@@ -2062,8 +2070,16 @@ export type Database = {
         Returns: undefined
       }
       set_my_attendance_pin: { Args: { _pin: string }; Returns: undefined }
+      set_slot_group: {
+        Args: { _group: string; _slot: string }
+        Returns: undefined
+      }
       set_student_enrollment: {
         Args: { _reason: string; _status: string; _student: string }
+        Returns: undefined
+      }
+      set_student_subgroup: {
+        Args: { _group: string; _student: string }
         Returns: undefined
       }
       student_absence_standing: {

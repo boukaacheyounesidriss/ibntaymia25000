@@ -23,7 +23,7 @@ const MAP: Record<string, NavGroupId> = {
   "/dashboard/legal-notices": "legal", "/dashboard/decisions": "legal", "/dashboard/behavior": "legal",
   "/dashboard/teachers": "pedagogy", "/dashboard/schedule": "pedagogy", "/dashboard/free-periods": "pedagogy",
   "/dashboard/substitutions": "pedagogy", "/dashboard/exams": "pedagogy", "/dashboard/meetings": "pedagogy",
-  "/dashboard/class-reps": "pedagogy", "/dashboard/teacher-space": "pedagogy", "/dashboard/my-teachers": "students",
+  "/dashboard/class-reps": "pedagogy", "/dashboard/teacher-space": "pedagogy", "/dashboard/class-groups": "pedagogy", "/dashboard/my-teachers": "students",
   "/dashboard/students": "students", "/dashboard/cards": "students", "/dashboard/cards/print": "students",
   "/dashboard/guidance": "students", "/dashboard/library": "students", "/dashboard/trips": "students",
   "/dashboard/reports": "students",
