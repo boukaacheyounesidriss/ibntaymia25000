@@ -36,3 +36,4 @@ use the editor.
 - Keep built-in enum roles and additive custom role definitions separate; custom roles grant only existing permission capabilities, never implicit built-in role membership or wider data visibility.
 - Change built-in account roles atomically through the owner-authorized database function and protect owner credentials in every account administration path.
 - Teachers' class membership (class_teachers) is auto-synced from schedule_slots by trigger; teacher-scoped RLS on students depends on it.
+- Lab/TD subgroups: students.subgroup (g1/g2) + attendance_sessions.group_scope (all/g1/g2/merged); a DB trigger forbids overlapping scopes per class/date/period, and subgroup/slot-group edits go only through RPCs allowed for management or teachers of that class — keeps G1 and G2 sessions coexisting without double counting.
