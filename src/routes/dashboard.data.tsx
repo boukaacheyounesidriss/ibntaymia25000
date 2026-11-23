@@ -39,7 +39,7 @@ function DataPage() {
   return (
     <div className="space-y-4">
       <PageHeader title="مستكشف البيانات" description="تصفح كل بيانات المؤسسة وعدّلها. كل تعديل يُسجَّل باسمك." />
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [&>button]:shrink-0">
         <Button size="sm" variant={tab === "__accounts" ? "default" : "outline"} onClick={() => setTab("__accounts")}>
           <KeyRound className="h-4 w-4" /> الحسابات وتسجيلات الدخول
         </Button>
@@ -92,7 +92,7 @@ function TableView({ table }: { table: string }) {
   return (
     <Card>
       <CardContent className="space-y-3 pt-6">
-        <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); setPage(0); setQ(search); }}>
+        <form className="flex flex-wrap gap-2 [&>input]:min-w-0 [&>input]:flex-1" onSubmit={(e) => { e.preventDefault(); setPage(0); setQ(search); }}>
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="بحث…" />
           <Button type="submit" variant="outline"><Search className="h-4 w-4" /></Button>
           {!meta.readOnly && (
@@ -104,7 +104,7 @@ function TableView({ table }: { table: string }) {
         </div>
         {error && <p className="text-destructive">{(error as Error).message}</p>}
         {isLoading ? <p>جارٍ التحميل…</p> : rows.length === 0 ? <p className="text-muted-foreground">لا توجد سجلات.</p> : (
-          <div className="overflow-auto rounded border">
+          <div className="max-w-full overflow-x-auto rounded border">
             <table className="w-full text-xs">
               <thead className="bg-muted">
                 <tr>
@@ -277,7 +277,7 @@ function Accounts() {
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="بحث بالاسم أو البريد…" />
         {error && <p className="text-destructive">{(error as Error).message}</p>}
         {isLoading ? <p>جارٍ التحميل…</p> : (
-          <div className="overflow-auto rounded border">
+          <div className="max-w-full overflow-x-auto rounded border">
             <table className="w-full text-sm">
               <thead className="bg-muted"><tr>
                 <th className="p-2 text-start">الاسم</th><th className="p-2 text-start">البريد</th>

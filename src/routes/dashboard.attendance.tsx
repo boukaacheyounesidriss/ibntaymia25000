@@ -396,7 +396,7 @@ function AttendancePage() {
         <div className="flex items-start gap-3">
           <span className="mt-1 text-primary"><HandDrawnStar size={36} /></span>
           <div>
-            <h1 className="font-display text-3xl leading-tight md:text-4xl">
+            <h1 className="font-display text-2xl leading-tight sm:text-3xl md:text-4xl">
               <span className="underline-sketch">تسجيل الحضور</span>
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -473,7 +473,7 @@ function AttendancePage() {
                 </div>
               </div>
             )}
-            <div className="grid gap-3 md:grid-cols-6">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-6">
             <Select value={classId} onValueChange={(v) => { setClassId(v); setSlotId(null); }}>
               <SelectTrigger>
                 <SelectValue placeholder="القسم" />
@@ -539,9 +539,9 @@ function AttendancePage() {
 
       {activeSessionId && (
         <Card className="cinema-shadow">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>تأشير الحضور — {students?.length ?? 0} تلميذ</CardTitle>
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
               <Badge className={STATUS_META.present.tone}>حاضر {counts.present}</Badge>
               <Badge className={STATUS_META.absent.tone}>غائب {counts.absent}</Badge>
               <Badge className={STATUS_META.late.tone}>متأخر {counts.late}</Badge>
@@ -584,10 +584,10 @@ function AttendancePage() {
               return (
                 <div
                   key={s.id}
-                  className={`flex items-center justify-between rounded-md border bg-card px-3 py-2 ${locked ? "border-orange-500/40" : "border-border"}`}
+                  className={`flex flex-col gap-2 rounded-md border bg-card px-3 py-2 sm:flex-row sm:items-center sm:justify-between ${locked ? "border-orange-500/40" : "border-border"}`}
                 >
-                  <div className="flex flex-col">
-                    <span className="font-medium">{s.full_name}</span>
+                  <div className="flex min-w-0 flex-col">
+                    <span className="font-medium break-words">{s.full_name}</span>
                     {permitIds.has(s.id) && <Badge variant="secondary">دخل بتصريح</Badge>}
                     {locked && (
                       <span className="text-xs text-orange-600 dark:text-orange-400">
@@ -600,7 +600,7 @@ function AttendancePage() {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="grid grid-cols-4 gap-1 sm:flex sm:items-center">
                     {locked ? (
                       <>
                         <Badge className={STATUS_META.late.tone}>متأخر — مقفل</Badge>
@@ -622,7 +622,7 @@ function AttendancePage() {
                           size="sm"
                           variant={cur === st ? "default" : "ghost"}
                           onClick={() => setMarks((m) => ({ ...m, [s.id]: st }))}
-                          className="h-8"
+                          className="h-10 px-1 text-xs sm:h-8 sm:px-3 sm:text-sm"
                         >
                           {STATUS_META[st].label}
                         </Button>

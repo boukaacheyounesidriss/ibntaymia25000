@@ -83,8 +83,8 @@ function DashboardLayout() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/60 bg-background/80 px-4 backdrop-blur-md">
+        <div className="flex min-w-0 max-w-full flex-1 flex-col">
+          <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-border/60 bg-background/80 px-2 sm:px-4 backdrop-blur-md">
             <SidebarTrigger />
             <div className="flex items-center gap-1" data-tour="header-tools">
               <span data-tour="search">
@@ -105,7 +105,7 @@ function DashboardLayout() {
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-x-hidden p-4 pb-24 sm:p-5 sm:pb-24 md:p-8">
+          <main className="min-w-0 max-w-full flex-1 overflow-x-hidden p-4 pb-24 sm:p-5 sm:pb-24 md:p-8">
             <Outlet />
           </main>
         </div>

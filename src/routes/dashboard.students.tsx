@@ -128,11 +128,26 @@ function StudentsPage() {
 
       {Object.entries(byClass).map(([className, rows]) => (
         <Card key={className}>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{className}</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle className="min-w-0 truncate">{className}</CardTitle>
             <Badge variant="secondary">{rows.length} تلميذ</Badge>
           </CardHeader>
           <CardContent>
+            <div className="space-y-2 md:hidden">
+              {rows.map((r) => (
+                <div key={r.id} className="rounded-xl border bg-card p-3">
+                  <p className="font-medium break-words">{r.full_name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {r.gender === "M" ? "ذكر" : "أنثى"} · {r.date_of_birth ?? "—"}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <ParentCallButtons s={r} />
+                    <ParentLinkDialog studentId={r.id} studentName={r.full_name} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -160,6 +175,7 @@ function StudentsPage() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           </CardContent>
         </Card>
       ))}
