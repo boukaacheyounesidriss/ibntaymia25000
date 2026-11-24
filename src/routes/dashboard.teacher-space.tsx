@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { TeacherAbsenceCard } from "@/components/TeacherAbsenceCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -34,14 +35,16 @@ function TeacherSpace() {
     <div className="mx-auto max-w-3xl space-y-4">
       <h1 className="font-display text-2xl font-bold">فضاء الأستاذ</h1>
       <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="posts">المنشورات</TabsTrigger>
           <TabsTrigger value="hours">الاستقبال</TabsTrigger>
           <TabsTrigger value="meet">المواعيد</TabsTrigger>
+          <TabsTrigger value="absence">غيابي</TabsTrigger>
         </TabsList>
         <TabsContent value="posts" className="mt-4"><Posts /></TabsContent>
         <TabsContent value="hours" className="mt-4"><Hours /></TabsContent>
         <TabsContent value="meet" className="mt-4"><Meetings /></TabsContent>
+        <TabsContent value="absence" className="mt-4"><TeacherAbsenceCard /></TabsContent>
       </Tabs>
     </div>
   );

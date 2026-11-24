@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CancelledSlotsNotice } from "@/components/CancelledSlotsNotice";
 import { friendlyError } from "@/lib/friendly-error";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -367,6 +368,7 @@ function ParentDashboard() {
 
   return (
     <div className="space-y-6">
+      <CancelledSlotsNotice />
       <PageHeader
         icon={<Users className="h-5 w-5" />}
         title={t("parent.title")}

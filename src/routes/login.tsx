@@ -1,4 +1,5 @@
 import { afterLoginPath } from "@/lib/pending-claim";
+import { InstallAppGuide } from "@/components/InstallAppGuide";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
@@ -208,6 +209,7 @@ function LoginPage() {
               </div>
             </form>
 
+            <InstallAppGuide />
             <Link to="/claim" className="block rounded-lg border border-primary/40 bg-primary/5 p-3 text-center text-sm font-semibold text-primary">
               لديك رمز تفعيل (قصاصة ورقية)؟ اربط حسابك من هنا
             </Link>

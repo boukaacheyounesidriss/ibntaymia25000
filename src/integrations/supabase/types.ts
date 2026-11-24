@@ -2147,6 +2147,16 @@ export type Database = {
           id: string
         }[]
       }
+      my_cancelled_slots: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          class_id: string
+          decision: string
+          on_date: string
+          reason: string
+          slot_id: string
+        }[]
+      }
       my_children_teachers: {
         Args: never
         Returns: {

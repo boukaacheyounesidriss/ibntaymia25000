@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CancelledSlotsNotice } from "@/components/CancelledSlotsNotice";
 import { friendlyError } from "@/lib/friendly-error";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -495,7 +496,8 @@ function StudentDashboard() {
         </TabsContent>
 
         {/* ---------- SCHEDULE ---------- */}
-        <TabsContent value="schedule" className="mt-4">
+        <TabsContent value="schedule" className="mt-4 space-y-4">
+          <CancelledSlotsNotice />
           <Card>
             <CardHeader className="flex flex-row items-center gap-2">
               <CalendarDays className="h-4 w-4 text-primary" />

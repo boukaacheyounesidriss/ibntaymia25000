@@ -183,6 +183,20 @@
       "when": 1795539209844,
       "tag": "0025_absence_entry_lock",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1795540693952,
+      "tag": "0026_teacher_absence_flow",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1795540706881,
+      "tag": "0027_fix_teacher_absence_channel",
+      "breakpoints": true
     }
   ]
 }
