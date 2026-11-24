@@ -2093,6 +2093,14 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      class_blocked_students: {
+        Args: { _class: string }
+        Returns: {
+          absences: number
+          since_date: string
+          student_id: string
+        }[]
+      }
       gen_claim_code: { Args: never; Returns: string }
       get_overview_stats: { Args: never; Returns: Json }
       get_user_roles: {
@@ -2115,6 +2123,10 @@ export type Database = {
       is_role_owner: { Args: never; Returns: boolean }
       issue_claim_tokens: {
         Args: { _class?: string; _kind: string }
+        Returns: number
+      }
+      justify_absences: {
+        Args: { _reason: string; _record_ids: string[] }
         Returns: number
       }
       kiosk_context: { Args: never; Returns: Json }
@@ -2204,6 +2216,13 @@ export type Database = {
           unjustified_days: number
         }[]
       }
+      student_entry_block: {
+        Args: { _sid: string }
+        Returns: {
+          absences: number
+          since_date: string
+        }[]
+      }
       teaches_class: {
         Args: { _class: string; _teacher: string }
         Returns: boolean
@@ -2221,6 +2240,7 @@ export type Database = {
         | "developer"
         | "class_rep"
         | "class_rep_deputy"
+        | "digital_advisor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2359,6 +2379,7 @@ export const Constants = {
         "developer",
         "class_rep",
         "class_rep_deputy",
+        "digital_advisor",
       ],
     },
   },

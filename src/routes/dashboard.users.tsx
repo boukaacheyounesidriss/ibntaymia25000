@@ -66,6 +66,7 @@ const ALL_ROLES: AppRole[] = [
   "student",
   "class_rep",
   "class_rep_deputy",
+  "digital_advisor",
 ];
 
 const ROLE_LABEL: Record<string, string> = {
@@ -79,6 +80,7 @@ const ROLE_LABEL: Record<string, string> = {
   class_rep_deputy: "نائب مسؤول القسم",
   parent: "وليّ",
   student: "تلميذ",
+  digital_advisor: "مستشار الرقمنة",
 };
 
 type Account = {

@@ -174,6 +174,7 @@
     "parent": "Parent",
     "student": "Élève",
     "gate_monitor": "Agent portail",
+    "digital_advisor": "Conseiller numérique",
     "class_rep": "Responsable de classe",
     "class_rep_deputy": "Adjoint du responsable"
   },

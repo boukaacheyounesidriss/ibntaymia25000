@@ -67,14 +67,19 @@ const roleConfig: Record<AppRole, { url: string; icon: typeof ShieldCheck; gradi
     gradient: "from-primary to-primary-glow",
   },
   class_rep: {
-    url: "/dashboard/kiosk",
+    url: "/dashboard/class-rep-attendance",
     icon: Users,
     gradient: "from-primary to-secondary",
   },
   class_rep_deputy: {
-    url: "/dashboard/kiosk",
+    url: "/dashboard/class-rep-attendance",
     icon: Users,
     gradient: "from-secondary to-primary",
+  },
+  digital_advisor: {
+    url: "/dashboard/supervisor",
+    icon: Users,
+    gradient: "from-primary to-secondary",
   },
   gate_monitor: {
     url: "/dashboard/gate",

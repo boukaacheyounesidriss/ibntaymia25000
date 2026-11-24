@@ -208,6 +208,9 @@ function LoginPage() {
               </div>
             </form>
 
+            <Link to="/claim" className="block rounded-lg border border-primary/40 bg-primary/5 p-3 text-center text-sm font-semibold text-primary">
+              لديك رمز تفعيل (قصاصة ورقية)؟ اربط حسابك من هنا
+            </Link>
             <p className="text-center text-xs text-muted-foreground">
               {t("auth.contact_admin_for_account") ||
                 "للحصول على حساب، يرجى التواصل مع إدارة المؤسسة."}

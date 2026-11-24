@@ -54,6 +54,15 @@ function KioskPage() {
     },
     refetchInterval: 60_000,
   });
+  const { data: blocked = [] } = useQuery({
+    queryKey: ["kiosk-blocked", ctx?.class_id],
+    enabled: !!ctx?.class_id,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("class_blocked_students", { _class: ctx!.class_id });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
   const cycle = (id: string) =>
     setMarks((m) => {
@@ -103,7 +112,10 @@ function KioskPage() {
   }
 
   const scope: Scope = scopePick ?? defaultScope(ctx.slot?.group_label);
-  const shown = studentsForScope(ctx.students, scope);
+  const blockedIds = new Set(blocked.map((b) => b.student_id));
+  const scoped = studentsForScope(ctx.students, scope);
+  const shown = scoped.filter((s) => !blockedIds.has(s.id));
+  const lockedList = scoped.filter((s) => blockedIds.has(s.id));
   const counts = { absent: 0, late: 0 };
   Object.values(marks).forEach((v) => { if (v !== "present") counts[v]++; });
 
@@ -133,6 +145,12 @@ function KioskPage() {
           <ScopeTabs value={scope} onChange={(v) => { setScopePick(v); setMarks({}); }} slotGroup={ctx.slot.group_label ?? "all"} />
           {scope === "merged" && <p className="rounded-md bg-accent/20 p-2 text-xs">حصة مجمّعة استثنائياً: يُسجَّل حضور الفوجين معاً.</p>}
           {!shown.length && <p className="text-sm text-destructive">لم يُوزَّع تلاميذ {SCOPE_LABEL[scope]} بعد. يوزّعهم الأستاذ أو الإدارة من صفحة «أفواج الأعمال التطبيقية».</p>}
+          {lockedList.length > 0 && (
+            <div className="rounded-md border border-destructive/50 bg-destructive/5 p-3 text-sm">
+              <p className="mb-1 font-semibold text-destructive">غياب غير مبرَّر — يُوجَّه إلى الإدارة ولا يُسجَّل:</p>
+              <p>{lockedList.map((s) => s.name).join("، ")}</p>
+            </div>
+          )}
           <p className="text-sm text-muted-foreground">اضغط على اسم التلميذ: مرة = غائب، مرتين = متأخر، ثلاثاً = حاضر.</p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {shown.map((s, i) => {

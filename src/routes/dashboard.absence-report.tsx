@@ -1,7 +1,9 @@
 import { ParentCallButtons } from "@/components/ParentCallButtons";
 import { createFileRoute } from "@tanstack/react-router";
 import { friendlyError } from "@/lib/friendly-error";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -53,6 +55,7 @@ export const Route = createFileRoute("/dashboard/absence-report")({
 type Status = "present" | "absent" | "late" | "excused";
 
 type Row = {
+  id: string;
   student_id: string;
   status: Status;
   justified_at: string | null;
@@ -84,6 +87,11 @@ function AbsenceReportPage() {
   const { user } = useAuth();
   const [date, setDate] = useState(today());
   const [sending, setSending] = useState(false);
+  const qc = useQueryClient();
+  const [justifyRow, setJustifyRow] = useState<Row | null>(null);
+  const [jReason, setJReason] = useState("");
+  const [jAllDay, setJAllDay] = useState(true);
+  const [jBusy, setJBusy] = useState(false);
 
   const { data: smsTest } = useQuery({
     queryKey: ["absence-sms-test", user?.id],
@@ -110,7 +118,7 @@ function AbsenceReportPage() {
       const { data, error } = await supabase
         .from("attendance_records")
         .select(
-          "student_id, status, justified_at, justification_note, students(id, full_name, class_id, guardian_name, guardian_phone, father_phone, mother_phone), attendance_sessions!inner(session_date, period, subject, classes(name))",
+          "id, student_id, status, justified_at, justification_note, students(id, full_name, class_id, guardian_name, guardian_phone, father_phone, mother_phone), attendance_sessions!inner(session_date, period, subject, classes(name))",
         )
         .in("status", ["absent", "late", "excused"])
         .eq("attendance_sessions.session_date", date);
@@ -184,6 +192,22 @@ function AbsenceReportPage() {
     [list, date],
   );
 
+  const submitJustify = async () => {
+    if (!justifyRow) return;
+    if (!jReason.trim()) return toast.error("اكتب أو اختر سبب التبرير");
+    const ids = jAllDay
+      ? list.filter((r) => r.student_id === justifyRow.student_id && !r.justified_at && r.status !== "excused").map((r) => r.id)
+      : [justifyRow.id];
+    setJBusy(true);
+    const { data, error } = await supabase.rpc("justify_absences", { _record_ids: ids, _reason: jReason.trim() });
+    setJBusy(false);
+    if (error) return toast.error(friendlyError(error));
+    toast.success(`تم تبرير ${data ?? 0} حصة`);
+    setJustifyRow(null);
+    setJReason("");
+    qc.invalidateQueries({ queryKey: ["absence-report"] });
+  };
+
   const notifyParents = async () => {
     const targets = list.filter((r) => r.status !== "excused" && !r.justified_at);
     if (targets.length === 0) return toast.info("لا توجد حالات غير مبرَّرة لإشعارها");
@@ -208,6 +232,29 @@ function AbsenceReportPage() {
 
   return (
     <div className="space-y-6">
+      <Dialog open={!!justifyRow} onOpenChange={(o) => !o && setJustifyRow(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تبرير غياب: {justifyRow?.students?.full_name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              {["حضور الولي", "شهادة طبية", "ظرف عائلي", "وثيقة إدارية"].map((x) => (
+                <Button key={x} type="button" size="sm" variant={jReason === x ? "default" : "outline"} onClick={() => setJReason(x)}>{x}</Button>
+              ))}
+            </div>
+            <Input value={jReason} onChange={(e) => setJReason(e.target.value)} placeholder="سبب التبرير" />
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox checked={jAllDay} onCheckedChange={(v) => setJAllDay(v === true)} />
+              تبرير كل حصص هذا اليوم غير المبرَّرة لهذا التلميذ
+            </label>
+            <p className="text-xs text-muted-foreground">بعد التبرير يعود التلميذ تلقائياً إلى قوائم حضور الأساتذة.</p>
+          </div>
+          <DialogFooter>
+            <Button onClick={submitJustify} disabled={jBusy}>{jBusy ? "جارٍ الحفظ..." : "حفظ التبرير"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-3">
           <span className="mt-1 text-primary">
@@ -351,6 +398,11 @@ function AbsenceReportPage() {
                         <Badge variant="outline">
                           {r.justified_at ? "مبرَّر" : "غير مبرَّر"}
                         </Badge>
+                      )}
+                      {r.status !== "excused" && !r.justified_at && (
+                        <Button size="sm" variant="secondary" onClick={() => { setJustifyRow(r); setJAllDay(true); }}>
+                          إضافة تبرير
+                        </Button>
                       )}
                       {(() => {
                         const st = r.students;

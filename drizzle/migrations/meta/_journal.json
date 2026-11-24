@@ -169,6 +169,20 @@
       "when": 1795501069580,
       "tag": "0023_account_claim_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795539179589,
+      "tag": "0024_add_digital_advisor_role",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795539209844,
+      "tag": "0025_absence_entry_lock",
+      "breakpoints": true
     }
   ]
 }

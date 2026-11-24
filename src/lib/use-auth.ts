@@ -34,7 +34,12 @@ export function useAuth(): AuthState & {
     const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
 
     if (!error && data) {
-      setRoles(data.map((r) => r.role as AppRole));
+      {
+        const list = data.map((r) => r.role as AppRole);
+        // مستشار الرقمنة يعمل بصلاحيات واجهات المراقب العام
+        if (list.includes("digital_advisor") && !list.includes("supervisor")) list.push("supervisor");
+        setRoles(list);
+      }
     } else {
       setRoles([]);
     }

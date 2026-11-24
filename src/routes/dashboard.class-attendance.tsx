@@ -90,8 +90,21 @@ function TeacherQuickAttendance() {
     },
   });
 
+  const { data: blocked = [] } = useQuery({
+    queryKey: ["qa-blocked", slot?.class_id],
+    enabled: !!slot,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("class_blocked_students", { _class: slot!.class_id });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const blockedMap = useMemo(() => new Map(blocked.map((b) => [b.student_id, b])), [blocked]);
+
   useEffect(() => { setMarks({}); if (slot) setScope(defaultScope(slot.group_label)); }, [slotId]); // eslint-disable-line react-hooks/exhaustive-deps
-  const students = useMemo(() => studentsForScope(allStudents, scope), [allStudents, scope]);
+  const scoped = useMemo(() => studentsForScope(allStudents, scope), [allStudents, scope]);
+  const students = useMemo(() => scoped.filter((s) => !blockedMap.has(s.id)), [scoped, blockedMap]);
+  const lockedList = useMemo(() => scoped.filter((s) => blockedMap.has(s.id)), [scoped, blockedMap]);
   const unassigned = allStudents.filter((s) => !s.subgroup).length;
   const counts = useMemo(() => {
     const v = Object.values(marks);
@@ -170,6 +183,23 @@ function TeacherQuickAttendance() {
             <Card><CardContent className="flex items-center gap-2 pt-4 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" />حضور هذه الحصة مسجّل. للتصحيح استعمل صفحة تسجيل الحضور الكاملة.</CardContent></Card>
           ) : (
             <>
+              {lockedList.length > 0 && (
+                <div className="rounded-xl border border-destructive/50 bg-destructive/5 p-3 text-sm">
+                  <p className="mb-2 font-semibold text-destructive">غياب غير مبرَّر — لا يُسجَّل حتى تبرّره الإدارة ({lockedList.length})</p>
+                  <ul className="space-y-1">
+                    {lockedList.map((s) => {
+                      const b = blockedMap.get(s.id);
+                      return (
+                        <li key={s.id} className="flex items-center justify-between gap-2 rounded-lg bg-card px-3 py-2">
+                          <span>{s.full_name}</span>
+                          <Badge variant="destructive">منذ {b?.since_date} · {b?.absences} حصة</Badge>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <p className="mt-2 text-xs text-muted-foreground">يُوجَّه التلميذ إلى الإدارة (المراقب) لتبرير غيابه أو أخذ تصريح دخول.</p>
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">الجميع حاضر افتراضياً. المس التلميذ: غائب ← متأخر ← حاضر.</p>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {students.map((s, i) => {
