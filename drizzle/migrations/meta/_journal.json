@@ -162,6 +162,13 @@
       "when": 1795309270049,
       "tag": "0022_class_subgroups_tp_td",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795501069580,
+      "tag": "0023_account_claim_tokens",
+      "breakpoints": true
     }
   ]
 }

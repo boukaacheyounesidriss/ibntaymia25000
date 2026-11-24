@@ -1,3 +1,4 @@
+import { afterLoginPath } from "@/lib/pending-claim";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +27,7 @@ function AuthCallback() {
     const go = () => {
       if (done) return;
       done = true;
-      navigate({ to: "/dashboard", replace: true });
+      navigate({ to: afterLoginPath(), replace: true });
     };
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session) go();

@@ -1,3 +1,4 @@
+import { afterLoginPath } from "@/lib/pending-claim";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
@@ -50,7 +51,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: "/dashboard" });
+      navigate({ to: afterLoginPath() });
     }
   }, [user, loading, navigate]);
 
@@ -65,7 +66,7 @@ function LoginPage() {
           password,
         });
         if (!directErr) {
-          navigate({ to: "/dashboard" });
+          navigate({ to: afterLoginPath() });
           return;
         }
         if (!/invalid/i.test(directErr.message)) throw directErr;
@@ -79,7 +80,7 @@ function LoginPage() {
         refresh_token: tokens.refresh_token,
       });
       if (error) throw error;
-      navigate({ to: "/dashboard" });
+      navigate({ to: afterLoginPath() });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : String(err));
     } finally {
@@ -97,7 +98,7 @@ function LoginPage() {
       if (!result.redirected) {
         const { data, error } = await supabase.auth.getUser();
         if (error) throw error;
-        if (data.user) navigate({ to: "/dashboard" });
+        if (data.user) navigate({ to: afterLoginPath() });
         setSubmitting(false);
       }
     } catch (err) {

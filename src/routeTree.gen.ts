@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ClaimRouteImport } from './routes/claim'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HelpRouteImport } from './routes/help'
@@ -30,6 +31,7 @@ import { Route as DashboardAttendanceRouteImport } from './routes/dashboard.atte
 import { Route as DashboardBehaviorRouteImport } from './routes/dashboard.behavior'
 import { Route as DashboardCalendarRouteImport } from './routes/dashboard.calendar'
 import { Route as DashboardCardsRouteImport } from './routes/dashboard.cards'
+import { Route as DashboardClaimCodesRouteImport } from './routes/dashboard.claim-codes'
 import { Route as DashboardClassAttendanceRouteImport } from './routes/dashboard.class-attendance'
 import { Route as DashboardClassGroupsRouteImport } from './routes/dashboard.class-groups'
 import { Route as DashboardClassRepAttendanceRouteImport } from './routes/dashboard.class-rep-attendance'
@@ -89,6 +91,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaimRoute = ClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -184,6 +191,11 @@ const DashboardCalendarRoute = DashboardCalendarRouteImport.update({
 const DashboardCardsRoute = DashboardCardsRouteImport.update({
   id: '/cards',
   path: '/cards',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardClaimCodesRoute = DashboardClaimCodesRouteImport.update({
+  id: '/claim-codes',
+  path: '/claim-codes',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardClassAttendanceRoute =
@@ -443,6 +455,7 @@ const DashboardCardsPrintRoute = DashboardCardsPrintRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
@@ -461,6 +474,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/claim-codes': typeof DashboardClaimCodesRoute
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
@@ -516,6 +530,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
@@ -533,6 +548,7 @@ export interface FileRoutesByTo {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/claim-codes': typeof DashboardClaimCodesRoute
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
@@ -589,6 +605,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
@@ -607,6 +624,7 @@ export interface FileRoutesById {
   '/dashboard/behavior': typeof DashboardBehaviorRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/cards': typeof DashboardCardsRouteWithChildren
+  '/dashboard/claim-codes': typeof DashboardClaimCodesRoute
   '/dashboard/class-attendance': typeof DashboardClassAttendanceRoute
   '/dashboard/class-groups': typeof DashboardClassGroupsRoute
   '/dashboard/class-rep-attendance': typeof DashboardClassRepAttendanceRoute
@@ -664,6 +682,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/claim'
     | '/dashboard'
     | '/forgot-password'
     | '/help'
@@ -682,6 +701,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/claim-codes'
     | '/dashboard/class-attendance'
     | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
@@ -737,6 +757,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/claim'
     | '/forgot-password'
     | '/help'
     | '/login'
@@ -754,6 +775,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/claim-codes'
     | '/dashboard/class-attendance'
     | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
@@ -809,6 +831,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/claim'
     | '/dashboard'
     | '/forgot-password'
     | '/help'
@@ -827,6 +850,7 @@ export interface FileRouteTypes {
     | '/dashboard/behavior'
     | '/dashboard/calendar'
     | '/dashboard/cards'
+    | '/dashboard/claim-codes'
     | '/dashboard/class-attendance'
     | '/dashboard/class-groups'
     | '/dashboard/class-rep-attendance'
@@ -883,6 +907,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ClaimRoute: typeof ClaimRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HelpRoute: typeof HelpRoute
@@ -913,6 +938,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/claim': {
+      id: '/claim'
+      path: '/claim'
+      fullPath: '/claim'
+      preLoaderRoute: typeof ClaimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1046,6 +1078,13 @@ declare module '@tanstack/react-router' {
       path: '/cards'
       fullPath: '/dashboard/cards'
       preLoaderRoute: typeof DashboardCardsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/claim-codes': {
+      id: '/dashboard/claim-codes'
+      path: '/claim-codes'
+      fullPath: '/dashboard/claim-codes'
+      preLoaderRoute: typeof DashboardClaimCodesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/class-attendance': {
@@ -1421,6 +1460,7 @@ interface DashboardRouteChildren {
   DashboardBehaviorRoute: typeof DashboardBehaviorRoute
   DashboardCalendarRoute: typeof DashboardCalendarRoute
   DashboardCardsRoute: typeof DashboardCardsRouteWithChildren
+  DashboardClaimCodesRoute: typeof DashboardClaimCodesRoute
   DashboardClassAttendanceRoute: typeof DashboardClassAttendanceRoute
   DashboardClassGroupsRoute: typeof DashboardClassGroupsRoute
   DashboardClassRepAttendanceRoute: typeof DashboardClassRepAttendanceRoute
@@ -1478,6 +1518,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBehaviorRoute: DashboardBehaviorRoute,
   DashboardCalendarRoute: DashboardCalendarRoute,
   DashboardCardsRoute: DashboardCardsRouteWithChildren,
+  DashboardClaimCodesRoute: DashboardClaimCodesRoute,
   DashboardClassAttendanceRoute: DashboardClassAttendanceRoute,
   DashboardClassGroupsRoute: DashboardClassGroupsRoute,
   DashboardClassRepAttendanceRoute: DashboardClassRepAttendanceRoute,
@@ -1534,6 +1575,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ClaimRoute: ClaimRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HelpRoute: HelpRoute,

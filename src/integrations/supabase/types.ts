@@ -92,6 +92,63 @@ export type Database = {
         }
         Relationships: []
       }
+      account_claim_tokens: {
+        Row: {
+          claimed_by: string | null
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          issued_by: string | null
+          kind: string
+          status: string
+          student_id: string | null
+          teacher_code: string | null
+          used_at: string | null
+        }
+        Insert: {
+          claimed_by?: string | null
+          code: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_by?: string | null
+          kind: string
+          status?: string
+          student_id?: string | null
+          teacher_code?: string | null
+          used_at?: string | null
+        }
+        Update: {
+          claimed_by?: string | null
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_by?: string | null
+          kind?: string
+          status?: string
+          student_id?: string | null
+          teacher_code?: string | null
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_claim_tokens_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_claim_tokens_teacher_code_fkey"
+            columns: ["teacher_code"]
+            isOneToOne: false
+            referencedRelation: "teacher_directory"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       account_login_codes: {
         Row: {
           code: string
@@ -344,6 +401,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      claim_attempts: {
+        Row: {
+          failed_count: number
+          locked_until: string | null
+          user_id: string
+        }
+        Insert: {
+          failed_count?: number
+          locked_until?: string | null
+          user_id: string
+        }
+        Update: {
+          failed_count?: number
+          locked_until?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       class_representatives: {
         Row: {
@@ -1995,6 +2070,30 @@ export type Database = {
     }
     Functions: {
       auto_split_class_subgroups: { Args: { _class: string }; Returns: number }
+      claim_account: { Args: { _code: string }; Returns: Json }
+      claim_lookup: {
+        Args: { _code: string }
+        Returns: {
+          claimed_by: string | null
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          issued_by: string | null
+          kind: string
+          status: string
+          student_id: string | null
+          teacher_code: string | null
+          used_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "account_claim_tokens"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      gen_claim_code: { Args: never; Returns: string }
       get_overview_stats: { Args: never; Returns: Json }
       get_user_roles: {
         Args: { _user_id: string }
@@ -2014,6 +2113,10 @@ export type Database = {
       }
       is_management: { Args: { _uid: string }; Returns: boolean }
       is_role_owner: { Args: never; Returns: boolean }
+      issue_claim_tokens: {
+        Args: { _class?: string; _kind: string }
+        Returns: number
+      }
       kiosk_context: { Args: never; Returns: Json }
       kiosk_submit_attendance: {
         Args: {
@@ -2052,9 +2155,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      preview_claim_token: { Args: { _code: string }; Returns: Json }
       reset_teacher_attendance_pin: {
         Args: { _teacher: string }
         Returns: undefined
+      }
+      revoke_claim_token: {
+        Args: { _id: string; _reissue?: boolean }
+        Returns: string
       }
       send_bulk_notification: {
         Args: {

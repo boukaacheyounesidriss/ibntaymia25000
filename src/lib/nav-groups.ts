@@ -27,7 +27,7 @@ const MAP: Record<string, NavGroupId> = {
   "/dashboard/students": "students", "/dashboard/cards": "students", "/dashboard/cards/print": "students",
   "/dashboard/guidance": "students", "/dashboard/library": "students", "/dashboard/trips": "students",
   "/dashboard/reports": "students",
-  "/dashboard/import": "system", "/dashboard/users": "system", "/dashboard/permissions": "system",
+  "/dashboard/import": "system", "/dashboard/claim-codes": "system", "/dashboard/users": "system", "/dashboard/permissions": "system",
   "/dashboard/data": "system", "/dashboard/console": "system", "/dashboard/diagnostics": "system",
   "/dashboard/settings": "system",
   "/dashboard/me": "account", "/dashboard/profile": "account", "/dashboard/help": "account", "/dashboard/appearance": "account", "/dashboard/offline": "account",
