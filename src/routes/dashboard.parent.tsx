@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { ChildWeeklySchedule } from "@/components/ChildWeeklySchedule";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { CancelledSlotsNotice } from "@/components/CancelledSlotsNotice";
 import { friendlyError } from "@/lib/friendly-error";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -63,6 +64,7 @@ type Child = {
   id: string;
   full_name: string;
   class_id: string | null;
+  subgroup: string | null;
   classes: { name: string } | null;
 };
 
@@ -103,7 +105,7 @@ function ParentDashboard() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("parent_student")
-        .select("student_id, students(id, full_name, class_id, classes(name))")
+        .select("student_id, students(id, full_name, class_id, subgroup, classes(name))")
         .eq("parent_user_id", user.id);
       if (error) throw error;
       type Row = {
@@ -381,6 +383,7 @@ function ParentDashboard() {
         }
       />
 
+      <Button asChild variant="outline" className="h-11 w-full whitespace-normal"><Link to="/dashboard/my-teachers"><BookOpen /> أساتذة أبنائي والدروس وأوقات الاستقبال والمواعيد</Link></Button>
       {/* ---- child selector ---- */}
       <Card>
         <CardHeader className="pb-2">
@@ -406,6 +409,7 @@ function ParentDashboard() {
         </CardContent>
       </Card>
 
+      {selected?.class_id && <ChildWeeklySchedule classId={selected.class_id} subgroup={selected.subgroup} />}
       {/* ---- 30-day summary + monthly report ---- */}
       {selected && (
         <Card>

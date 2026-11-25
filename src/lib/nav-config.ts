@@ -8,84 +8,84 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: NavItem[] = [
-  { url: "/dashboard/sms-alert", labelKey: "nav.notifications", roles: ["admin", "director", "supervisor"] },
+  { url: "/dashboard/sms-alert", labelKey: "nav.notifications", roles: ["admin", "director", "supervisor", "digital_advisor"] },
   { url: "/dashboard", labelKey: "nav.dashboard" },
   { url: "/dashboard/inbox", labelKey: "nav.inbox" },
-  { url: "/dashboard/scan", labelKey: "nav.quick_scan", roles: ["admin", "director", "supervisor", "teacher", "gate_monitor"] },
+  { url: "/dashboard/scan", labelKey: "nav.quick_scan", roles: ["admin", "director", "supervisor", "digital_advisor", "teacher", "gate_monitor"] },
   { url: "/dashboard/class-rep-attendance", labelKey: "nav.class_kiosk", roles: ["class_rep", "class_rep_deputy"] },
-  { url: "/dashboard/parent-phones", labelKey: "nav.parent_phones", roles: ["admin", "director", "supervisor"] },
-  { url: "/dashboard/claim-codes", labelKey: "nav.claim_codes", roles: ["admin", "director", "supervisor"] },
-  { url: "/dashboard/class-reps", labelKey: "nav.class_reps", roles: ["admin", "director", "supervisor"] },
-  { url: "/dashboard/teachers", labelKey: "nav.teachers_dir", roles: ["admin", "director", "supervisor"] },
+  { url: "/dashboard/parent-phones", labelKey: "nav.parent_phones", roles: ["admin", "director", "supervisor", "digital_advisor"] },
+  { url: "/dashboard/claim-codes", labelKey: "nav.claim_codes", roles: ["admin", "director", "supervisor", "digital_advisor"] },
+  { url: "/dashboard/class-reps", labelKey: "nav.class_reps", roles: ["admin", "director", "supervisor", "digital_advisor"] },
+  { url: "/dashboard/teachers", labelKey: "nav.teachers_dir", roles: ["admin", "director", "supervisor", "digital_advisor"] },
   { url: "/dashboard/my-attendance", labelKey: "nav.my_attendance", roles: ["parent", "student"] },
   { url: "/dashboard/today", labelKey: "nav.today", roles: ["teacher"] },
   { url: "/dashboard/class-attendance", labelKey: "nav.class_attendance", roles: ["teacher"] },
-  { url: "/dashboard/class-groups", labelKey: "nav.class_groups", roles: ["admin", "director", "supervisor", "teacher"] },
+  { url: "/dashboard/class-groups", labelKey: "nav.class_groups", roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"] },
   { url: "/dashboard/teacher-space", labelKey: "nav.teacher_space", roles: ["teacher"] },
   { url: "/dashboard/my-teachers", labelKey: "nav.my_teachers", roles: ["parent", "student"] },
-  { url: "/dashboard/weekly", labelKey: "nav.weekly", roles: ["admin", "director", "supervisor"] },
+  { url: "/dashboard/weekly", labelKey: "nav.weekly", roles: ["admin", "director", "supervisor", "digital_advisor"] },
   {
     url: "/dashboard/students",
     labelKey: "nav.students",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/attendance",
     labelKey: "nav.attendance",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/absence-report",
     labelKey: "nav.absence_report",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
-  { url: "/dashboard/entry-permits", labelKey: "nav.entry_permits", roles: ["admin", "director", "supervisor"] },
-  { url: "/dashboard/legal-notices", labelKey: "nav.legal_notices", roles: ["admin", "director", "supervisor"] },
-  { url: "/dashboard/free-periods", labelKey: "nav.free_periods", roles: ["admin", "director", "supervisor"] },
+  { url: "/dashboard/entry-permits", labelKey: "nav.entry_permits", roles: ["admin", "director", "supervisor", "digital_advisor"] },
+  { url: "/dashboard/legal-notices", labelKey: "nav.legal_notices", roles: ["admin", "director", "supervisor", "digital_advisor"] },
+  { url: "/dashboard/free-periods", labelKey: "nav.free_periods", roles: ["admin", "director", "supervisor", "digital_advisor"] },
   {
     url: "/dashboard/cards",
     labelKey: "nav.cards",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/notifications",
     labelKey: "nav.notifications",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/decisions",
     labelKey: "nav.decisions",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/behavior",
     labelKey: "nav.behavior",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/library",
     labelKey: "nav.library",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/trips",
     labelKey: "nav.trips",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/exams",
     labelKey: "nav.exams",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/guidance",
     labelKey: "nav.guidance",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/reports",
     labelKey: "nav.reports",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   { url: "/dashboard/import", labelKey: "nav.import", roles: ["admin"] },
   { url: "/dashboard/users", labelKey: "nav.users", roles: ["admin", "developer"] },
@@ -94,18 +94,18 @@ export const NAV_ITEMS: NavItem[] = [
   {
     url: "/dashboard/schedule",
     labelKey: "nav.schedule",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
 
   {
     url: "/dashboard/substitutions",
     labelKey: "nav.substitutions",
-    roles: ["admin", "director", "supervisor", "teacher"],
+    roles: ["admin", "director", "supervisor", "digital_advisor", "teacher"],
   },
   {
     url: "/dashboard/meetings",
     labelKey: "nav.meetings",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   { url: "/dashboard/calendar", labelKey: "nav.calendar" },
 
@@ -118,7 +118,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     url: "/dashboard/supervisor",
     labelKey: "roles.supervisor",
-    roles: ["supervisor", "admin"],
+    roles: ["supervisor", "digital_advisor", "admin"],
   },
   {
     url: "/dashboard/teacher",
@@ -143,7 +143,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     url: "/dashboard/gate-log",
     labelKey: "nav.gate_log",
-    roles: ["gate_monitor", "admin", "director", "supervisor"],
+    roles: ["gate_monitor", "admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/me",
@@ -163,7 +163,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     url: "/dashboard/cards/print",
     labelKey: "nav.print_cards",
-    roles: ["admin", "director", "supervisor"],
+    roles: ["admin", "director", "supervisor", "digital_advisor"],
   },
   {
     url: "/dashboard/console",
@@ -205,7 +205,7 @@ export function defaultLandingFor(userRoles: AppRole[]): string {
     "developer",
     "admin",
     "director",
-    "supervisor",
+    "supervisor", "digital_advisor",
     "teacher",
     "gate_monitor",
     "class_rep",
@@ -221,6 +221,7 @@ export function defaultLandingFor(userRoles: AppRole[]): string {
       return "/dashboard/admin";
     case "director":
       return "/dashboard/director";
+    case "digital_advisor":
     case "supervisor":
       return "/dashboard/supervisor";
     case "teacher":

@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { TeacherPostComposer } from "@/components/TeacherPostComposer";
+import { LessonAttachments } from "@/components/LessonAttachments";
+import { LESSON_BUCKET, readAttachments } from "@/lib/lesson-files";
 import { TeacherAbsenceCard } from "@/components/TeacherAbsenceCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -56,7 +59,8 @@ function useMyClasses() {
     queryKey: ["my-classes", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("schedule_slots").select("class_id, classes(name)").eq("teacher_id", user!.id).eq("is_active", true);
+      if (!user) return [];
+      const { data } = await supabase.from("schedule_slots").select("class_id, classes(name)").eq("teacher_id", user?.id ?? "").eq("is_active", true);
       const m = new Map<string, string>();
       (data ?? []).forEach((r) => m.set(r.class_id, (r.classes as { name: string } | null)?.name ?? ""));
       return [...m].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
@@ -68,53 +72,28 @@ function Posts() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const { data: classes = [] } = useMyClasses();
-  const [f, setF] = useState({ class_id: "", kind: "lesson", title: "", body: "", link_url: "", due_date: "" });
   const { data: posts = [] } = useQuery({
     queryKey: ["my-posts", user?.id],
     enabled: !!user,
-    queryFn: async () => (await supabase.from("teacher_posts").select("id, kind, title, body, link_url, due_date, created_at, classes(name)").eq("teacher_id", user!.id).order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("teacher_posts").select("id, kind, title, body, link_url, attachments, due_date, created_at, classes(name)").eq("teacher_id", user?.id ?? "").order("created_at", { ascending: false })).data ?? [],
   });
-  async function add() {
-    if (!f.class_id || !f.title.trim()) return toast.error("اختر القسم واكتب العنوان");
-    if (f.link_url && !safeLink(f.link_url)) return toast.error("الرابط غير صالح");
-    const { error } = await supabase.from("teacher_posts").insert({
-      class_id: f.class_id, kind: f.kind, title: f.title.trim(), body: f.body.trim() || null,
-      link_url: safeLink(f.link_url), due_date: f.due_date || null, teacher_id: user!.id,
-    });
-    if (error) return toast.error(friendlyError(error));
-    toast.success("تم النشر لتلاميذ القسم وأوليائهم");
-    setF({ ...f, title: "", body: "", link_url: "", due_date: "" });
-    qc.invalidateQueries({ queryKey: ["my-posts"] });
-  }
   async function del(id: string) {
     if (!confirm("حذف المنشور؟")) return;
-    await supabase.from("teacher_posts").delete().eq("id", id);
+    const paths = readAttachments(posts.find((p) => p.id === id)?.attachments).map((a) => a.path);
+    const { error } = await supabase.from("teacher_posts").delete().eq("id", id);
+    if (error) return toast.error(friendlyError(error));
+    if (paths.length) {
+      const result = await supabase.storage.from(LESSON_BUCKET).remove(paths);
+      if (result.error) toast.warning("حُذف المنشور؛ تعذّر تنظيف ملفاته، أبلغ الإدارة.");
+    }
     qc.invalidateQueries({ queryKey: ["my-posts"] });
   }
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader><CardTitle className="text-base">منشور جديد</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <Select value={f.class_id} onValueChange={(v) => setF({ ...f, class_id: v })}>
-              <SelectTrigger><SelectValue placeholder="القسم" /></SelectTrigger>
-              <SelectContent>{classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-            </Select>
-            <Select value={f.kind} onValueChange={(v) => setF({ ...f, kind: v })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{Object.entries(POST_KINDS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-            </Select>
-          </div>
-          <Input placeholder="العنوان" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
-          <Textarea placeholder="المحتوى" rows={4} value={f.body} onChange={(e) => setF({ ...f, body: e.target.value })} />
-          <Input dir="ltr" placeholder="رابط (اختياري) https://..." value={f.link_url} onChange={(e) => setF({ ...f, link_url: e.target.value })} />
-          {(f.kind === "homework" || f.kind === "event") && (
-            <label className="block text-sm">تاريخ التسليم / الحدث<Input type="date" value={f.due_date} onChange={(e) => setF({ ...f, due_date: e.target.value })} /></label>
-          )}
-          <Button className="w-full" onClick={add}>نشر</Button>
-        </CardContent>
-      </Card>
+      <TeacherPostComposer classes={classes} onPublished={() => {
+        qc.invalidateQueries({ queryKey: ["my-posts"] });
+        qc.invalidateQueries({ queryKey: ["class-feed"] });
+      }} />
       {posts.map((p) => (
         <Card key={p.id}><CardContent className="space-y-1 pt-4 text-sm">
           <div className="flex items-center justify-between gap-2">
@@ -122,7 +101,9 @@ function Posts() {
             <Button size="icon" variant="ghost" onClick={() => del(p.id)} aria-label="حذف"><Trash2 className="h-4 w-4" /></Button>
           </div>
           <p className="text-xs text-muted-foreground">{(p.classes as { name: string } | null)?.name}{p.due_date ? ` · ${p.due_date}` : ""}</p>
-          {p.body && <p className="whitespace-pre-wrap">{p.body}</p>}
+          {p.body && <p className="whitespace-pre-wrap break-words">{p.body}</p>}
+          {safeLink(p.link_url) && <a href={safeLink(p.link_url) ?? ""} target="_blank" rel="noopener noreferrer" className="text-primary underline">فتح الرابط</a>}
+          <LessonAttachments value={p.attachments} />
         </CardContent></Card>
       ))}
     </div>
@@ -136,18 +117,18 @@ function Hours() {
   const { data: rows = [] } = useQuery({
     queryKey: ["my-reception", user?.id],
     enabled: !!user,
-    queryFn: async () => (await supabase.from("teacher_reception_hours").select("*").eq("teacher_id", user!.id).order("weekday")).data ?? [],
+    queryFn: async () => (await supabase.from("teacher_reception_hours").select("*").eq("teacher_id", user?.id ?? "").order("weekday")).data ?? [],
   });
   const { data: free = [] } = useQuery({
     queryKey: ["my-busy", user?.id],
     enabled: !!user,
-    queryFn: async () => (await supabase.from("schedule_slots").select("weekday, start_time, end_time").eq("teacher_id", user!.id).eq("is_active", true)).data ?? [],
+    queryFn: async () => (await supabase.from("schedule_slots").select("weekday, start_time, end_time").eq("teacher_id", user?.id ?? "").eq("is_active", true)).data ?? [],
   });
   const clash = free.some((s) => s.weekday === Number(f.weekday) && s.start_time.slice(0, 5) < f.end_time && f.start_time < s.end_time.slice(0, 5));
   async function add() {
     if (f.end_time <= f.start_time) return toast.error("وقت النهاية يجب أن يكون بعد البداية");
     if (clash) return toast.error("هذا الوقت يتعارض مع حصة في جدولك");
-    const { error } = await supabase.from("teacher_reception_hours").insert({ teacher_id: user!.id, weekday: Number(f.weekday), start_time: f.start_time, end_time: f.end_time, place: f.place || null });
+    const { error } = await supabase.from("teacher_reception_hours").insert({ teacher_id: user?.id ?? "", weekday: Number(f.weekday), start_time: f.start_time, end_time: f.end_time, place: f.place || null });
     if (error) return toast.error(friendlyError(error));
     toast.success("أُضيف وقت الاستقبال ويظهر لأولياء تلاميذك");
     qc.invalidateQueries({ queryKey: ["my-reception"] });
@@ -187,11 +168,11 @@ function Meetings() {
   const { data: rows = [] } = useQuery({
     queryKey: ["teacher-meetings", user?.id],
     enabled: !!user,
-    queryFn: async () => (await supabase.from("meeting_requests").select("id, preferred_date, preferred_slot, message, status, review_note, students(full_name)").eq("target_teacher_id", user!.id).order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("meeting_requests").select("id, preferred_date, preferred_slot, message, status, review_note, students(full_name)").eq("target_teacher_id", user?.id ?? "").order("created_at", { ascending: false })).data ?? [],
   });
   async function set(id: string, status: string) {
     const note = status === "rejected" ? prompt("سبب الرفض أو اقتراح موعد آخر:") ?? "" : "";
-    const { error } = await supabase.from("meeting_requests").update({ status, review_note: note || null, reviewed_by: user!.id, reviewed_at: new Date().toISOString() }).eq("id", id);
+    const { error } = await supabase.from("meeting_requests").update({ status, review_note: note || null, reviewed_by: user?.id ?? "", reviewed_at: new Date().toISOString() }).eq("id", id);
     if (error) return toast.error(friendlyError(error));
     qc.invalidateQueries({ queryKey: ["teacher-meetings"] });
   }

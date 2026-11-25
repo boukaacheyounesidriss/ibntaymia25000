@@ -1,4 +1,4 @@
-import { ParentCallButtons } from "@/components/ParentCallButtons";
+import { AbsenceStudentRow } from "@/components/AbsenceStudentRow";
 import { createFileRoute } from "@tanstack/react-router";
 import { friendlyError } from "@/lib/friendly-error";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,12 +25,6 @@ import { Badge } from "@/components/ui/badge";
 import { HandDrawnStar } from "@/components/HandDrawnStar";
 import { MessageSquare } from "lucide-react";
 import { preparedSms, smsComposerLink, type TelegramAlert } from "@/lib/telegram-alerts";
-
-function absenceSms(r: Row, date: string, phone: string | null | undefined) {
-  if (!phone) return null;
-  const body = `إداروم — ثانوية\nالسيد/السيدة ${r.students?.guardian_name || "ولي التلميذ"}، نعلمكم بتسجيل ${STATUS_LABEL[r.status]} للتلميذ(ة) ${r.students?.full_name ?? ""}، القسم ${r.attendance_sessions?.classes?.name ?? ""}، بتاريخ ${date}${r.attendance_sessions?.period ? `، الحصة ${r.attendance_sessions.period}` : ""}.\nيرجى التواصل مع إدارة الثانوية.`;
-  try { return smsComposerLink(phone, body, typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent)); } catch { return null; }
-}
 
 export const Route = createFileRoute("/dashboard/absence-report")({
   component: AbsenceReportPage,
@@ -84,7 +78,8 @@ const daysAgo = (n: number) => {
 };
 
 function AbsenceReportPage() {
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
+  const canJustify = roles.some((r) => ["admin", "director", "supervisor", "digital_advisor", "developer"].includes(r));
   const [date, setDate] = useState(today());
   const [sending, setSending] = useState(false);
   const qc = useQueryClient();
@@ -336,7 +331,7 @@ function AbsenceReportPage() {
         </section>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
           { label: "غائب", value: counts.absent, icon: Users },
           { label: "متأخر", value: counts.late, icon: CalendarDays },
@@ -374,59 +369,12 @@ function AbsenceReportPage() {
               </div>
               <div className="divide-y divide-border">
                 {items.map((r, i) => (
-                  <div
+                  <AbsenceStudentRow
                     key={`${r.student_id}-${i}`}
-                    className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm"
-                  >
-                    <span className="font-medium">{r.students?.full_name ?? "—"}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">
-                        حصة {r.attendance_sessions?.period ?? "—"}
-                      </span>
-                      <Badge
-                        className={
-                          r.status === "absent"
-                            ? "bg-destructive/15 text-destructive border-destructive/30"
-                            : r.status === "late"
-                              ? "bg-accent/20 text-accent-foreground border-accent/40"
-                              : "bg-muted text-muted-foreground border-border"
-                        }
-                      >
-                        {STATUS_LABEL[r.status]}
-                      </Badge>
-                      {r.status !== "excused" && (
-                        <Badge variant="outline">
-                          {r.justified_at ? "مبرَّر" : "غير مبرَّر"}
-                        </Badge>
-                      )}
-                      {r.status !== "excused" && !r.justified_at && (
-                        <Button size="sm" variant="secondary" onClick={() => { setJustifyRow(r); setJAllDay(true); }}>
-                          إضافة تبرير
-                        </Button>
-                      )}
-                      {(() => {
-                        const st = r.students;
-                        const opts = [
-                          { label: "الأب", phone: st?.father_phone },
-                          { label: "الأم", phone: st?.mother_phone },
-                        ].filter((o) => o.phone);
-                        if (!opts.length && st?.guardian_phone) opts.push({ label: "الولي", phone: st.guardian_phone });
-                        const links = opts
-                          .map((o) => ({ ...o, link: absenceSms(r, date, o.phone) }))
-                          .filter((o) => o.link);
-                        return links.length ? (
-                          links.map((o) => (
-                            <Button key={o.label} asChild size="sm" className="gap-1">
-                              <a href={o.link!}><MessageSquare className="h-4 w-4" /> SMS {o.label}</a>
-                            </Button>
-                          ))
-                        ) : (
-                          <span className="text-xs text-muted-foreground">لا يوجد رقم ولي</span>
-                        );
-                      })()}
-                      <ParentCallButtons s={r.students} />
-                    </div>
-                  </div>
+                    student={r.students} status={r.status} justified={!!r.justified_at}
+                    period={r.attendance_sessions?.period} day={date}
+                    {...(canJustify ? { onJustify: () => { setJustifyRow(r); setJAllDay(true); } } : {})}
+                  />
                 ))}
               </div>
             </div>

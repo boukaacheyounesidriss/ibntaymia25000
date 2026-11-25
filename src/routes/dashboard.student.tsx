@@ -384,6 +384,7 @@ function StudentDashboard() {
         <StatCard icon={Flame} label={t("st.streak")} value={streak} />
       </div>
 
+      <Button asChild variant="outline" className="h-11 w-full whitespace-normal"><Link to="/dashboard/my-teachers"><BookOpen /> أساتذتي والدروس وأوقات الاستقبال</Link></Button>
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="flex w-full flex-wrap justify-start">
           <TabsTrigger value="overview">{t("st.tab_overview")}</TabsTrigger>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { LessonAttachments } from "@/components/LessonAttachments";
 import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
@@ -73,7 +74,7 @@ function MyTeachers() {
 function Feed() {
   const { data: posts = [] } = useQuery({
     queryKey: ["class-feed"],
-    queryFn: async () => (await supabase.from("teacher_posts").select("id, kind, title, body, link_url, due_date, created_at, classes(name)").order("created_at", { ascending: false }).limit(60)).data ?? [],
+    queryFn: async () => (await supabase.from("teacher_posts").select("id, kind, title, body, link_url, attachments, due_date, created_at, classes(name)").order("created_at", { ascending: false }).limit(60)).data ?? [],
   });
   if (!posts.length) return <p className="text-sm text-muted-foreground">لا منشورات بعد.</p>;
   return (
@@ -84,7 +85,8 @@ function Feed() {
           <Card key={p.id}><CardContent className="space-y-1 pt-4 text-sm">
             <p className="font-semibold"><Badge variant="secondary" className="me-1">{POST_KINDS[p.kind] ?? p.kind}</Badge>{p.title}</p>
             <p className="text-xs text-muted-foreground">{(p.classes as { name: string } | null)?.name}{p.due_date ? ` · ${p.due_date}` : ""}</p>
-            {p.body && <p className="whitespace-pre-wrap">{p.body}</p>}
+            {p.body && <p className="whitespace-pre-wrap break-words">{p.body}</p>}
+            <LessonAttachments value={p.attachments} />
             {link && <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary underline"><ExternalLink className="h-3 w-3" />فتح الرابط</a>}
           </CardContent></Card>
         );

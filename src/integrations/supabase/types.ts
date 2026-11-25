@@ -1810,6 +1810,7 @@ export type Database = {
       }
       teacher_posts: {
         Row: {
+          attachments: Json
           body: string | null
           class_id: string | null
           created_at: string
@@ -1821,6 +1822,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          attachments?: Json
           body?: string | null
           class_id?: string | null
           created_at?: string
@@ -1832,6 +1834,7 @@ export type Database = {
           title: string
         }
         Update: {
+          attachments?: Json
           body?: string | null
           class_id?: string | null
           created_at?: string
