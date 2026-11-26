@@ -204,6 +204,13 @@
       "when": 1795586532184,
       "tag": "0028_private_teacher_lesson_attachments",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1795673559026,
+      "tag": "0029_teacher_edit_once_pages_display_name",
+      "breakpoints": true
     }
   ]
 }

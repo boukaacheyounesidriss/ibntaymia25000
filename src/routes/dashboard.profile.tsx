@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Upload, Save, KeyRound, ShieldAlert, History, X } from "lucide-react";
+import { Upload, Save, KeyRound, History, X } from "lucide-react";
 import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -83,15 +83,7 @@ function ProfilePage() {
   const { user, roles, loading } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const isAdmin = roles.includes("admin") || roles.includes("developer");
 
-  // Hard client-side guard — server RLS still governs data access.
-  useEffect(() => {
-    if (!loading && user && !isAdmin) {
-      toast.error("هذه الصفحة مخصصة للمسؤول فقط");
-      navigate({ to: "/dashboard", replace: true });
-    }
-  }, [loading, user, isAdmin, navigate]);
 
   const [fullName, setFullName] = useState("");
   const [lang, setLang] = useState<"ar" | "fr" | "en">("ar");
@@ -110,7 +102,7 @@ function ProfilePage() {
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
-    enabled: !!user && isAdmin,
+    enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
@@ -124,7 +116,7 @@ function ProfilePage() {
 
   const { data: auditLog } = useQuery({
     queryKey: ["profile-audit", user?.id],
-    enabled: !!user && isAdmin,
+    enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profile_audit_log")
@@ -327,18 +319,6 @@ function ProfilePage() {
   );
 
   if (loading) return <p className="p-4 text-muted-foreground">جارٍ التحميل...</p>;
-  if (!isAdmin) {
-    return (
-      <div className="mx-auto max-w-lg">
-        <Card>
-          <CardContent className="flex items-center gap-3 p-6 text-sm">
-            <ShieldAlert className="h-5 w-5 text-destructive" />
-            هذه الصفحة مخصصة لحساب المسؤول فقط.
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

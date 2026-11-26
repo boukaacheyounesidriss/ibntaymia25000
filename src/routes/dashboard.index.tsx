@@ -1,3 +1,4 @@
+import { useDisplayName } from "@/lib/use-display-name";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth, type AppRole } from "@/lib/use-auth";
@@ -91,13 +92,14 @@ const roleConfig: Record<AppRole, { url: string; icon: typeof ShieldCheck; gradi
 function DashboardHome() {
   const { t } = useTranslation();
   const { user, roles, loading } = useAuth();
+  const displayName = useDisplayName();
 
   return (
     <div className="space-y-8">
       <div className="animate-reveal">
         <p className="text-sm font-medium text-muted-foreground">{t("dashboard.welcome")}</p>
         <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-          {user?.user_metadata?.full_name || user?.email}
+          {displayName}
         </h1>
       </div>
 

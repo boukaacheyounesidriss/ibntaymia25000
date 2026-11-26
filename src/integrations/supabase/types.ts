@@ -260,6 +260,7 @@ export type Database = {
           session_type: string
           slot_id: string | null
           subject: string | null
+          teacher_edit_count: number
           teacher_id: string
           updated_at: string
         }
@@ -274,6 +275,7 @@ export type Database = {
           session_type?: string
           slot_id?: string | null
           subject?: string | null
+          teacher_edit_count?: number
           teacher_id: string
           updated_at?: string
         }
@@ -288,6 +290,7 @@ export type Database = {
           session_type?: string
           slot_id?: string | null
           subject?: string | null
+          teacher_edit_count?: number
           teacher_id?: string
           updated_at?: string
         }
@@ -1149,6 +1152,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      page_visibility_rules: {
+        Row: {
+          hidden: boolean
+          id: string
+          page: string
+          target: string
+          target_type: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          hidden?: boolean
+          id?: string
+          page: string
+          target?: string
+          target_type: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          hidden?: boolean
+          id?: string
+          page?: string
+          target?: string
+          target_type?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       parent_student: {
         Row: {
@@ -2173,6 +2206,7 @@ export type Database = {
           teacher_name: string
         }[]
       }
+      my_display_name: { Args: never; Returns: string }
       owner_set_account_roles: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
@@ -2235,6 +2269,10 @@ export type Database = {
           absences: number
           since_date: string
         }[]
+      }
+      teacher_edit_attendance: {
+        Args: { _changes: Json; _session: string }
+        Returns: number
       }
       teaches_class: {
         Args: { _class: string; _teacher: string }

@@ -1,3 +1,4 @@
+import { useDisplayName } from "@/lib/use-display-name";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
@@ -76,6 +77,7 @@ export function AppSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const closeMobile = () => { if (isMobile) setOpenMobile(false); };
   const collapsed = state === "collapsed";
+  const displayName = useDisplayName();
   const { t, i18n } = useTranslation();
   const { roles, signOut, user } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -165,7 +167,7 @@ export function AppSidebar() {
             className="mb-2 flex items-center gap-2 truncate text-xs text-muted-foreground hover:text-foreground"
           >
             <ProfileAvatar />
-            <span className="truncate">{user.email}</span>
+            <span className="truncate">{displayName}</span>
           </Link>
         )}
         <Button
@@ -184,6 +186,7 @@ export function AppSidebar() {
 
 function ProfileAvatar() {
   const { user } = useAuth();
+  const name = useDisplayName();
   const { data: url } = useQuery({
     queryKey: ["sidebar-avatar", user?.id],
     enabled: !!user,
@@ -204,7 +207,7 @@ function ProfileAvatar() {
       {url ? (
         <img src={url} alt="" className="h-full w-full object-cover" />
       ) : (
-        <span className="text-xs text-muted-foreground">{user?.email?.[0]?.toUpperCase() ?? "?"}</span>
+        <span className="text-xs text-muted-foreground">{name[0] ?? "?"}</span>
       )}
     </span>
   );

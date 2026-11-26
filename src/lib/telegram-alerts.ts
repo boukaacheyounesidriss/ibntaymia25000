@@ -24,7 +24,9 @@ export function preparedSms(alert: TelegramAlert): string {
 }
 
 export function smsComposerLink(phone: string, body: string, apple: boolean): string {
-  return `sms:${normalizeGuardianPhone(phone)}${apple ? "&" : "?"}body=${encodeURIComponent(body)}`;
+  let to: string;
+  try { to = normalizeGuardianPhone(phone); } catch { to = phone.replace(/[^\d+]/g, ""); }
+  return `sms:${to}${apple ? "&" : "?"}body=${encodeURIComponent(body)}`;
 }
 
 export function canPrepareSms(alert: TelegramAlert): boolean {

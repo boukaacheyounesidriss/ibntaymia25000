@@ -1,6 +1,6 @@
 {
-  "name": "إداروم — IDAROOM",
-  "short_name": "IDAROOM",
+  "name": "إداروم — ثانوية ابن تيمية",
+  "short_name": "إداروم",
   "description": "منصة إداروم: النظام الرقمي للمؤسسات التعليمية الجزائرية.",
   "start_url": "/",
   "scope": "/",
@@ -27,6 +27,11 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

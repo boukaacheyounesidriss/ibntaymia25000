@@ -8,7 +8,8 @@ export const getRouter = () => {
       queries: {
         // Cache for 5 min — avoid refetching on every navigation
         staleTime: 5 * 60 * 1000,
-        gcTime: 30 * 60 * 1000,
+        gcTime: 24 * 60 * 60 * 1000,
+        networkMode: "offlineFirst",
         refetchOnWindowFocus: false,
         refetchOnMount: false,
       },

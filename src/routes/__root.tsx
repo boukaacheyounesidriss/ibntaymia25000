@@ -1,5 +1,7 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { startOfflineSupport } from "@/lib/offline-persist";
+import { OutboxStatus } from "@/components/OutboxStatus";
 import {
   Outlet,
   createRootRouteWithContext,
@@ -80,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#0f1b3d" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "IDAROOM" },
+      { name: "apple-mobile-web-app-title", content: "إداروم" },
       {
         name: "description",
         content:
@@ -100,7 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "منصة إداروم: إدارة هجينة (Online/Offline) للمدارس الجزائرية. شارة رقمية موحدة، تسجيل حضور فوري، إشعارات للأولياء، وتحكم يدوي كامل.",
       },
-      { property: "og:site_name", content: "IDAROOM" },
+      { property: "og:site_name", content: "إداروم" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a3e747fc-4158-4f8d-8753-399509d3b879/id-preview-04056949--40b10812-a235-43e8-8957-9d63de1dcd94.lovable.app-1783532087094.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a3e747fc-4158-4f8d-8753-399509d3b879/id-preview-04056949--40b10812-a235-43e8-8957-9d63de1dcd94.lovable.app-1783532087094.png" },
     ],
@@ -120,8 +122,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Outfit:wght@300..700&family=Figtree:ital,wght@0,300..900;1,300..900&family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Playwrite+BE+VLG:wght@100..400&family=Gloock&display=swap",
       },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/idaroom-logo.png" },
-      { rel: "icon", type: "image/png", href: "/idaroom-logo.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=2" },
+      { rel: "apple-touch-icon-precomposed", href: "/apple-touch-icon-precomposed.png?v=2" },
+      { rel: "icon", type: "image/png", href: "/idaroom-logo.png?v=2" },
     ],
     htmlAttrs: { lang: "ar", dir: "rtl" },
   }),
@@ -149,6 +152,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const { i18n } = useTranslation();
+  useEffect(() => startOfflineSupport(queryClient), [queryClient]);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [updateRemote, setUpdateRemote] = useState<RemoteVersion | null>(null);
   const [updateProgress, setUpdateProgress] = useState<UpdateProgress>({
@@ -252,6 +256,7 @@ function RootComponent() {
       <ThemeProvider>
         <AppearanceProvider>
           <OfflineBanner />
+          <OutboxStatus />
           <Outlet />
           <Toaster richColors position="top-center" />
           <UpdateProgressDialog open={updateOpen} progress={updateProgress} remote={updateRemote} />
