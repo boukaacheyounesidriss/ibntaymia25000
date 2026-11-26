@@ -9,11 +9,11 @@ export function AbsenceStudentRow({ student, status, justified, period, day, onJ
   student: Student | null; status: string; justified: boolean; period: string | null | undefined; day: string; onJustify?: () => void;
 }) {
   const contacts = [{ label: "الأب", phone: student?.father_phone }, { label: "الأم", phone: student?.mother_phone }].flatMap((c) => {
-    const phone = normalizeDzPhone(c.phone);
+    const phone = c.phone ? normalizeDzPhone(c.phone) : null;
     return phone ? [{ ...c, phone }] : [];
   });
   if (!contacts.length) {
-    const phone = normalizeDzPhone(student?.guardian_phone);
+    const phone = student?.guardian_phone ? normalizeDzPhone(student.guardian_phone) : null;
     if (phone) contacts.push({ label: "الولي", phone });
   }
   const label = status === "absent" ? "غائب" : status === "late" ? "متأخر" : "بعذر";
