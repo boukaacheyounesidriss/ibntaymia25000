@@ -6,6 +6,7 @@ import { CheckCircle2, Clock, Save, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import { friendlyError } from "@/lib/friendly-error";
+import { queueAttendance, isNetworkError } from "@/lib/attendance-outbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -121,11 +122,20 @@ function TeacherQuickAttendance() {
     if (!students.length) return toast.error("لا تلاميذ في هذا الفوج. وزّع الأفواج أولاً");
     if (!confirm(`${SCOPE_LABEL[scope]} — تأكيد: ${students.length - counts.absent - counts.late} حاضر، ${counts.absent} غائب، ${counts.late} متأخر؟`)) return;
     setBusy(true);
-    const { data: sess, error } = await supabase.from("attendance_sessions").insert({
+    const sessionData = {
       class_id: slot.class_id, teacher_id: user.id, session_date: today, period: periodOf(slot),
       subject: slot.subject, slot_id: slot.id, session_type: "regular", group_scope: scope,
       note: scope === "merged" ? "حصة مجمّعة استثنائياً للفوجين" : null,
-    } as never).select("id").single();
+    };
+    const marksList = students.map((s) => ({ student_id: s.id, status: marks[s.id] ?? "present" }));
+    const queueOffline = () => {
+      queueAttendance({ user_id: user.id, session: sessionData, marks: marksList, label: `${slot.subject} — ${today}` });
+      setBusy(false); setMarks({});
+      toast.success("لا يوجد إنترنت: حُفظ الحضور في الهاتف وسيُرسل للإدارة تلقائياً عند عودة الاتصال");
+    };
+    if (typeof navigator !== "undefined" && !navigator.onLine) return queueOffline();
+    const { data: sess, error } = await supabase.from("attendance_sessions").insert(sessionData as never).select("id").single();
+    if (error && isNetworkError(error)) return queueOffline();
     if (error) { setBusy(false); return toast.error(error.code === "23505" ? "حضور هذه الحصة مسجل مسبقاً" : friendlyError(error)); }
     const rows = students.map((s) => ({ session_id: sess.id, student_id: s.id, status: marks[s.id] ?? "present" }));
     const { error: e2 } = await supabase.from("attendance_records").upsert(rows, { onConflict: "session_id,student_id" });

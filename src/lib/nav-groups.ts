@@ -16,7 +16,7 @@ const MAP: Record<string, NavGroupId> = {
   "/dashboard/supervisor": "home", "/dashboard/teacher": "home", "/dashboard/parent": "home",
   "/dashboard/student": "home", "/dashboard/gate": "home", "/dashboard/today": "home", "/dashboard/calendar": "home",
   "/dashboard/my-attendance": "home",
-  "/dashboard/attendance": "daily", "/dashboard/scan": "daily", "/dashboard/class-rep-attendance": "daily", "/dashboard/class-attendance": "daily",
+  "/dashboard/attendance": "daily", "/dashboard/scan": "daily", "/dashboard/class-rep-attendance": "daily", "/dashboard/class-attendance": "daily", "/dashboard/my-sessions": "daily",
   "/dashboard/absence-report": "daily", "/dashboard/sms-alert": "daily", "/dashboard/entry-permits": "daily",
   "/dashboard/parent-phones": "daily", "/dashboard/gate-log": "daily", "/dashboard/weekly": "daily",
   "/dashboard/notifications": "daily",

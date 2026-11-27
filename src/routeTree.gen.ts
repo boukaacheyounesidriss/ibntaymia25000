@@ -55,6 +55,7 @@ import { Route as DashboardLibraryRouteImport } from './routes/dashboard.library
 import { Route as DashboardMeRouteImport } from './routes/dashboard.me'
 import { Route as DashboardMeetingsRouteImport } from './routes/dashboard.meetings'
 import { Route as DashboardMyAttendanceRouteImport } from './routes/dashboard.my-attendance'
+import { Route as DashboardMySessionsRouteImport } from './routes/dashboard.my-sessions'
 import { Route as DashboardMyTeachersRouteImport } from './routes/dashboard.my-teachers'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard.notifications'
 import { Route as DashboardOfflineRouteImport } from './routes/dashboard.offline'
@@ -315,6 +316,11 @@ const DashboardMyAttendanceRoute = DashboardMyAttendanceRouteImport.update({
   path: '/my-attendance',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardMySessionsRoute = DashboardMySessionsRouteImport.update({
+  id: '/my-sessions',
+  path: '/my-sessions',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardMyTeachersRoute = DashboardMyTeachersRouteImport.update({
   id: '/my-teachers',
   path: '/my-teachers',
@@ -498,6 +504,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/me': typeof DashboardMeRoute
   '/dashboard/meetings': typeof DashboardMeetingsRoute
   '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/my-sessions': typeof DashboardMySessionsRoute
   '/dashboard/my-teachers': typeof DashboardMyTeachersRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/offline': typeof DashboardOfflineRoute
@@ -572,6 +579,7 @@ export interface FileRoutesByTo {
   '/dashboard/me': typeof DashboardMeRoute
   '/dashboard/meetings': typeof DashboardMeetingsRoute
   '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/my-sessions': typeof DashboardMySessionsRoute
   '/dashboard/my-teachers': typeof DashboardMyTeachersRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/offline': typeof DashboardOfflineRoute
@@ -648,6 +656,7 @@ export interface FileRoutesById {
   '/dashboard/me': typeof DashboardMeRoute
   '/dashboard/meetings': typeof DashboardMeetingsRoute
   '/dashboard/my-attendance': typeof DashboardMyAttendanceRoute
+  '/dashboard/my-sessions': typeof DashboardMySessionsRoute
   '/dashboard/my-teachers': typeof DashboardMyTeachersRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/offline': typeof DashboardOfflineRoute
@@ -725,6 +734,7 @@ export interface FileRouteTypes {
     | '/dashboard/me'
     | '/dashboard/meetings'
     | '/dashboard/my-attendance'
+    | '/dashboard/my-sessions'
     | '/dashboard/my-teachers'
     | '/dashboard/notifications'
     | '/dashboard/offline'
@@ -799,6 +809,7 @@ export interface FileRouteTypes {
     | '/dashboard/me'
     | '/dashboard/meetings'
     | '/dashboard/my-attendance'
+    | '/dashboard/my-sessions'
     | '/dashboard/my-teachers'
     | '/dashboard/notifications'
     | '/dashboard/offline'
@@ -874,6 +885,7 @@ export interface FileRouteTypes {
     | '/dashboard/me'
     | '/dashboard/meetings'
     | '/dashboard/my-attendance'
+    | '/dashboard/my-sessions'
     | '/dashboard/my-teachers'
     | '/dashboard/notifications'
     | '/dashboard/offline'
@@ -1248,6 +1260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMyAttendanceRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/my-sessions': {
+      id: '/dashboard/my-sessions'
+      path: '/my-sessions'
+      fullPath: '/dashboard/my-sessions'
+      preLoaderRoute: typeof DashboardMySessionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/my-teachers': {
       id: '/dashboard/my-teachers'
       path: '/my-teachers'
@@ -1484,6 +1503,7 @@ interface DashboardRouteChildren {
   DashboardMeRoute: typeof DashboardMeRoute
   DashboardMeetingsRoute: typeof DashboardMeetingsRoute
   DashboardMyAttendanceRoute: typeof DashboardMyAttendanceRoute
+  DashboardMySessionsRoute: typeof DashboardMySessionsRoute
   DashboardMyTeachersRoute: typeof DashboardMyTeachersRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardOfflineRoute: typeof DashboardOfflineRoute
@@ -1542,6 +1562,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardMeRoute: DashboardMeRoute,
   DashboardMeetingsRoute: DashboardMeetingsRoute,
   DashboardMyAttendanceRoute: DashboardMyAttendanceRoute,
+  DashboardMySessionsRoute: DashboardMySessionsRoute,
   DashboardMyTeachersRoute: DashboardMyTeachersRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardOfflineRoute: DashboardOfflineRoute,

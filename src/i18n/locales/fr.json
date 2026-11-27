@@ -56,7 +56,8 @@
     "class_attendance": "Présence de ma séance",
     "class_groups": "Groupes TP/TD",
     "teacher_space": "Espace enseignant",
-    "my_teachers": "Enseignants et cours"
+    "my_teachers": "Enseignants et cours",
+    "my_sessions": "Mes séances enregistrées"
   },
   "landing": {
     "hero_title": "Une gestion scolaire intelligente, sécurisée, qui fonctionne hors ligne",
