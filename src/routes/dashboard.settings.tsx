@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { setSimpleMode, useSimpleMode } from "@/lib/simple-mode";
 import { InstallAppGuide } from "@/components/InstallAppGuide";
 import { AdminControls } from "@/components/AdminControls";
+import { MaintenanceControl } from "@/components/MaintenanceControl";
 
 function SimpleModeCard() {
   const on = useSimpleMode();
@@ -108,6 +109,7 @@ function SettingsPage() {
       <PageHeader title="الإعدادات" description="معلومات التطبيق وإدارة التخزين المؤقت." />
       <InstallAppGuide />
       <SimpleModeCard />
+      <MaintenanceControl />
       <AdminControls />
       <InstitutionSettings />
       <DesktopKitPanel />

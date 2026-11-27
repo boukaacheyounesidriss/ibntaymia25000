@@ -2,6 +2,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { startOfflineSupport } from "@/lib/offline-persist";
 import { OutboxStatus } from "@/components/OutboxStatus";
+import { MaintenanceGate } from "@/components/MaintenanceGate";
 import {
   Outlet,
   createRootRouteWithContext,
@@ -83,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "إداروم" },
+      { name: "google-site-verification", content: "WAPu2qTXPIzo5yqZ9fB9TG9u-vw55CUr4OiCkBYK-fw" },
       {
         name: "description",
         content:
@@ -257,7 +259,9 @@ function RootComponent() {
         <AppearanceProvider>
           <OfflineBanner />
           <OutboxStatus />
-          <Outlet />
+          <MaintenanceGate>
+            <Outlet />
+          </MaintenanceGate>
           <Toaster richColors position="top-center" />
           <UpdateProgressDialog open={updateOpen} progress={updateProgress} remote={updateRemote} />
         </AppearanceProvider>

@@ -1540,6 +1540,30 @@ export type Database = {
         }
         Relationships: []
       }
+      site_maintenance: {
+        Row: {
+          enabled: boolean
+          id: boolean
+          message: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          id?: boolean
+          message?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          id?: boolean
+          message?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       staff_whitelist: {
         Row: {
           created_at: string

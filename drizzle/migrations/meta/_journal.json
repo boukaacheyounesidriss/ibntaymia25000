@@ -211,6 +211,13 @@
       "when": 1795673559026,
       "tag": "0029_teacher_edit_once_pages_display_name",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1795764796183,
+      "tag": "0030_site_maintenance_mode",
+      "breakpoints": true
     }
   ]
 }

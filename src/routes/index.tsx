@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import {
   ScanLine,
@@ -61,6 +63,12 @@ const featureKeys = [
 ] as const;
 
 function Index() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    void supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/dashboard", replace: true });
+    });
+  }, [navigate]);
   const { t } = useTranslation();
 
   return (
