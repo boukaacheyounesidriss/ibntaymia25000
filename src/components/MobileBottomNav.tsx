@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck, Inbox, CalendarDays, Home, Users, BarChart3, CalendarRange, Menu, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
-import { defaultLandingFor } from "@/lib/nav-config";
+import { usePageVisibility } from "@/lib/use-page-visibility";
+import { defaultLandingFor, canAccess } from "@/lib/nav-config";
 import { useSidebar } from "@/components/ui/sidebar";
 
 type Item = { to: string; label: string; icon: LucideIcon };
@@ -12,7 +13,9 @@ type Item = { to: string; label: string; icon: LucideIcon };
 export function MobileBottomNav() {
   const { roles, hasRole, user } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const home = defaultLandingFor(roles);
+  const visibility = usePageVisibility(user?.id, roles);
+  const landing = defaultLandingFor(roles);
+  const home = visibility.isHidden(landing) ? "/dashboard" : landing;
   const { setOpenMobile } = useSidebar();
   const isMgmt = hasRole("admin") || hasRole("director") || hasRole("supervisor");
 
@@ -40,7 +43,7 @@ export function MobileBottomNav() {
   else if (hasRole("teacher"))
     items = [
       { to: "/dashboard/today", label: "اليوم", icon: CalendarCheck },
-      { to: "/dashboard/attendance", label: "الحضور", icon: Users },
+      { to: "/dashboard/class-attendance", label: "الحضور", icon: Users },
       { to: "/dashboard/calendar", label: "التقويم", icon: CalendarDays },
       { to: "/dashboard/inbox", label: "رسائلي", icon: Inbox },
     ];
@@ -55,7 +58,7 @@ export function MobileBottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
       <ul className="flex">
-        {items.map(({ to, label, icon: Icon }) => {
+        {items.filter((i) => canAccess(i.to, roles, user?.id) && !visibility.isHidden(i.to)).map(({ to, label, icon: Icon }) => {
           const active = path === to;
           return (
             <li key={to} className="flex-1">

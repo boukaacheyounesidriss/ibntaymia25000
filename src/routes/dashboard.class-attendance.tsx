@@ -6,7 +6,7 @@ import { CheckCircle2, Clock, Save, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import { friendlyError } from "@/lib/friendly-error";
-import { queueAttendance, isNetworkError } from "@/lib/attendance-outbox";
+import { queueAttendance, flushAttendanceOutbox, readOutbox, onOutboxChange } from "@/lib/attendance-outbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +46,12 @@ function TeacherQuickAttendance() {
   const [slotId, setSlotId] = useState<string | null>(null);
   const [marks, setMarks] = useState<Record<string, Mark>>({});
   const [busy, setBusy] = useState(false);
+  const [queued, setQueued] = useState<ReturnType<typeof readOutbox>>([]);
+  useEffect(() => {
+    const refresh = () => setQueued(readOutbox().filter((item) => item.user_id === user?.id));
+    refresh();
+    return onOutboxChange(refresh);
+  }, [user?.id]);
 
   const { data: slots = [], isLoading } = useQuery({
     queryKey: ["qa-slots", user?.id, weekday],
@@ -53,7 +59,7 @@ function TeacherQuickAttendance() {
     queryFn: async (): Promise<Slot[]> => {
       const { data, error } = await supabase.from("schedule_slots")
         .select("id, class_id, subject, start_time, end_time, period_no, room, group_label, classes(name)")
-        .eq("teacher_id", user!.id).eq("weekday", weekday).eq("is_active", true).order("start_time");
+        .eq("teacher_id", user?.id ?? "").eq("weekday", weekday).eq("is_active", true).order("start_time");
       if (error) throw error;
       return (data ?? []) as unknown as Slot[];
     },
@@ -72,12 +78,13 @@ function TeacherQuickAttendance() {
     if (slotId || !slots.length) return;
     const cur = slots.find((s) => s.start_time.slice(0, 5) <= nowHM && nowHM < s.end_time.slice(0, 5))
       ?? slots.find((s) => s.start_time.slice(0, 5) > nowHM) ?? slots[slots.length - 1];
-    setSlotId(cur.id);
+    if (cur) setSlotId(cur.id);
   }, [slots, slotId, nowHM]);
 
   const slot = slots.find((s) => s.id === slotId) ?? null;
   const [scope, setScope] = useState<Scope>("all");
-  const isDone = (s: Slot, sc: Scope = defaultScope(s.group_label)) => done.some((d) => d.class_id === s.class_id && d.period === periodOf(s)
+  const pending = (s: Slot, sc: Scope) => queued.some((q) => q.session.class_id === s.class_id && q.session.session_date === today && q.session.period === periodOf(s) && (sc === "all" || sc === "merged" || q.session.group_scope === "all" || q.session.group_scope === "merged" || q.session.group_scope === sc));
+  const isDone = (s: Slot, sc: Scope = defaultScope(s.group_label)) => pending(s, sc) || done.some((d) => d.class_id === s.class_id && d.period === periodOf(s)
     && (sc === "all" || sc === "merged" || d.group_scope === "all" || d.group_scope === "merged" || d.group_scope === sc));
 
   const { data: allStudents = [] } = useQuery({
@@ -85,7 +92,7 @@ function TeacherQuickAttendance() {
     enabled: !!slot,
     queryFn: async () => {
       const { data, error } = await supabase.from("students").select("id, full_name, subgroup")
-        .eq("class_id", slot!.class_id).eq("enrollment_status", "active").order("full_name");
+        .eq("class_id", slot?.class_id ?? "").eq("enrollment_status", "active").order("full_name");
       if (error) throw error;
       return data ?? [];
     },
@@ -95,7 +102,7 @@ function TeacherQuickAttendance() {
     queryKey: ["qa-blocked", slot?.class_id],
     enabled: !!slot,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("class_blocked_students", { _class: slot!.class_id });
+      const { data, error } = await supabase.rpc("class_blocked_students", { _class: slot?.class_id ?? "" });
       if (error) throw error;
       return data ?? [];
     },
@@ -122,33 +129,33 @@ function TeacherQuickAttendance() {
     if (!students.length) return toast.error("لا تلاميذ في هذا الفوج. وزّع الأفواج أولاً");
     if (!confirm(`${SCOPE_LABEL[scope]} — تأكيد: ${students.length - counts.absent - counts.late} حاضر، ${counts.absent} غائب، ${counts.late} متأخر؟`)) return;
     setBusy(true);
-    const sessionData = {
-      class_id: slot.class_id, teacher_id: user.id, session_date: today, period: periodOf(slot),
-      subject: slot.subject, slot_id: slot.id, session_type: "regular", group_scope: scope,
-      note: scope === "merged" ? "حصة مجمّعة استثنائياً للفوجين" : null,
-    };
-    const marksList = students.map((s) => ({ student_id: s.id, status: marks[s.id] ?? "present" }));
-    const queueOffline = () => {
-      queueAttendance({ user_id: user.id, session: sessionData, marks: marksList, label: `${slot.subject} — ${today}` });
-      setBusy(false); setMarks({});
-      toast.success("لا يوجد إنترنت: حُفظ الحضور في الهاتف وسيُرسل للإدارة تلقائياً عند عودة الاتصال");
-    };
-    if (typeof navigator !== "undefined" && !navigator.onLine) return queueOffline();
-    const { data: sess, error } = await supabase.from("attendance_sessions").insert(sessionData as never).select("id").single();
-    if (error && isNetworkError(error)) return queueOffline();
-    if (error) { setBusy(false); return toast.error(error.code === "23505" ? "حضور هذه الحصة مسجل مسبقاً" : friendlyError(error)); }
-    const rows = students.map((s) => ({ session_id: sess.id, student_id: s.id, status: marks[s.id] ?? "present" }));
-    const { error: e2 } = await supabase.from("attendance_records").upsert(rows, { onConflict: "session_id,student_id" });
-    setBusy(false);
-    if (e2) return toast.error(friendlyError(e2));
-    toast.success("تم حفظ حضور الحصة");
-    setMarks({});
-    qc.invalidateQueries({ queryKey: ["qa-done"] });
+    try {
+      const item = queueAttendance({
+        user_id: user.id,
+        session: {
+          class_id: slot.class_id, teacher_id: user.id, session_date: today, period: periodOf(slot),
+          subject: slot.subject, slot_id: slot.id, session_type: "regular", group_scope: scope,
+          note: scope === "merged" ? "حصة مجمّعة استثنائياً للفوجين" : null,
+        },
+        marks: students.map((s) => ({ student_id: s.id, status: marks[s.id] ?? "present" })),
+        label: `${slot.classes?.name ?? ""} · ${slot.subject} — ${today}`,
+      });
+      await flushAttendanceOutbox();
+      const remaining = readOutbox().find((q) => q.id === item.id);
+      if (remaining?.error) toast.error(remaining.error);
+      else if (remaining) toast.success("حُفظ الحضور في الهاتف وسيُرسل للإدارة عند عودة الاتصال");
+      else toast.success("تم حفظ حضور الحصة لدى الإدارة");
+      setMarks({});
+      void qc.invalidateQueries({ queryKey: ["qa-done"] });
+      void qc.invalidateQueries({ queryKey: ["my-sessions"] });
+    } catch (error) {
+      toast.error("تعذر حفظ الحضور على الهاتف", { description: friendlyError(error) });
+    } finally { setBusy(false); }
   }
 
   return (
     <div className="mx-auto max-w-2xl space-y-4 pb-28">
-      <h1 className="font-display text-2xl font-bold">حضور حصتي</h1>
+      <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="font-display text-2xl font-bold">حضور حصتي</h1><Button asChild variant="outline" size="sm"><Link to="/dashboard/my-sessions">حصصي المسجلة</Link></Button></div>
       {isLoading && <p className="text-sm text-muted-foreground">جارٍ التحميل...</p>}
       {!isLoading && !slots.length && <p className="text-sm text-muted-foreground">لا حصص لك في جدول اليوم.</p>}
 
@@ -190,7 +197,7 @@ function TeacherQuickAttendance() {
             <p className="rounded-lg border border-destructive/40 p-2 text-xs">{unassigned} تلميذ غير موزَّع على الأفواج. <Link to="/dashboard/class-groups" className="font-semibold underline">وزّع الأفواج</Link></p>
           )}
           {isDone(slot, scope) ? (
-            <Card><CardContent className="flex items-center gap-2 pt-4 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" />حضور هذه الحصة مسجّل. للتصحيح استعمل صفحة تسجيل الحضور الكاملة.</CardContent></Card>
+            <Card><CardContent className="flex items-center gap-2 pt-4 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" />{pending(slot, scope) ? "حُفظت الحصة على الهاتف وتنتظر الإرسال." : "حضور هذه الحصة مسجّل."} <Link to="/dashboard/my-sessions" className="underline">مراجعة الحصص المسجلة</Link></CardContent></Card>
           ) : (
             <>
               {lockedList.length > 0 && (

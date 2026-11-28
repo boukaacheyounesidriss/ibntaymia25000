@@ -39,7 +39,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/use-auth";
-import { NAV_ITEMS } from "@/lib/nav-config";
+import { usePageVisibility } from "@/lib/use-page-visibility";
+import { NAV_ITEMS, canAccess } from "@/lib/nav-config";
 import { NAV_GROUPS, groupFor } from "@/lib/nav-groups";
 import { SIMPLE_MODE_PAGES, useSimpleMode } from "@/lib/simple-mode";
 import { Button } from "./ui/button";
@@ -82,10 +83,9 @@ export function AppSidebar() {
   const { roles, signOut, user } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
 
+  const visibility = usePageVisibility(user?.id, roles);
   const simple = useSimpleMode();
-  const visibleItems = NAV_ITEMS.filter(
-    (it) => !it.roles || roles.includes("developer") || it.roles.some((r) => roles.includes(r)),
-  ).filter((it) => it.url !== "/dashboard/permissions" || isRoleOwnerIdentity(user?.id))
+  const visibleItems = NAV_ITEMS.filter((it) => canAccess(it.url, roles, user?.id) && !visibility.isHidden(it.url))
     .filter((it) => !simple || SIMPLE_MODE_PAGES.has(it.url));
 
   useRealtimeTable("notifications", ["sidebar-unread", user?.id]);

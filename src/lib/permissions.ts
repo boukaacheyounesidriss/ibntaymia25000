@@ -51,6 +51,7 @@ export const ALL_PERMISSION_KEYS = PERMISSION_GROUPS.flatMap((g) => g.items.map(
 
 export const LIMIT_SETTINGS = [
   { key: "attendance_edit_window_hours", label: "مدة تعديل الحضور بعد فتح الجلسة (بالساعات)", hint: "0 = بدون حد زمني" },
+  { key: "attendance_teacher_max_edits", label: "عدد التعديلات المسموحة للأستاذ لكل حصة", hint: "1 = تعديل واحد، 0 = منع التعديل" },
   { key: "attendance_backdate_days", label: "أقصى عدد أيام للتسجيل بتاريخ سابق", hint: "0 = اليوم فقط" },
 ];
 

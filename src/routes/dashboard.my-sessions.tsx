@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import { friendlyError } from "@/lib/friendly-error";
+import { attendanceEditState } from "@/lib/attendance-edit-policy";
+import { usePermission } from "@/lib/permissions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +33,7 @@ const NEXT: Record<string, string> = { present: "absent", absent: "late", late: 
 function MySessions() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const mayEdit = usePermission("attendance.edit_after_save", user?.id);
   const { data: limits } = useQuery({
     queryKey: ["edit-limits"],
     queryFn: async () => {
@@ -45,7 +48,7 @@ function MySessions() {
     queryFn: async () => {
       const { data, error } = await supabase.from("attendance_sessions")
         .select("id,session_date,period,subject,teacher_edit_count,created_at,classes(name),attendance_records(student_id,status,students(full_name))")
-        .eq("teacher_id", user!.id).order("created_at", { ascending: false }).limit(30);
+        .eq("teacher_id", user?.id ?? "").order("created_at", { ascending: false }).limit(30);
       if (error) throw error;
       return (data ?? []) as unknown as Sess[];
     },
@@ -79,9 +82,10 @@ function MySessions() {
       {sessions.map((s) => {
         const absent = s.attendance_records.filter((r) => r.status === "absent").length;
         const late = s.attendance_records.filter((r) => r.status === "late").length;
-        const expired = Date.now() - new Date(s.created_at).getTime() > (limits?.hours ?? 24) * 3600_000;
-        const used = s.teacher_edit_count >= (limits?.max ?? 1);
-        const canEdit = !expired && !used;
+        const policy = attendanceEditState(s.created_at, s.teacher_edit_count, limits ?? { max: 1, hours: 24 });
+        const expired = policy.expired;
+        const used = policy.exhausted;
+        const canEdit = !!limits && mayEdit === true && policy.canEdit;
         return (
           <Card key={s.id}>
             <CardContent className="space-y-2 p-4">
@@ -102,12 +106,12 @@ function MySessions() {
                   {s.attendance_records.map((r) => {
                     const st = draft[r.student_id] ?? r.status;
                     return (
-                      <button key={r.student_id} type="button" disabled={!canEdit}
+                      <Button variant="outline" key={r.student_id} type="button" disabled={!canEdit}
                         onClick={() => setDraft((d) => ({ ...d, [r.student_id]: NEXT[st] ?? "present" }))}
                         className="flex min-h-11 w-full items-center justify-between rounded-md border px-3 text-sm disabled:opacity-80">
                         <span>{r.students?.full_name}</span>
                         <span className={st === "absent" ? "text-destructive" : st === "late" ? "text-primary" : "text-muted-foreground"}>{LABEL[st]}</span>
-                      </button>
+                      </Button>
                     );
                   })}
                   {canEdit && <Button className="w-full" disabled={busy} onClick={() => void saveEdit(s)}>حفظ التعديل (مرة واحدة)</Button>}

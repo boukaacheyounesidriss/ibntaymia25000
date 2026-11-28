@@ -15,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/lib/use-auth";
 import { PERMISSION_GROUPS, LIMIT_SETTINGS } from "@/lib/permissions";
 import { friendlyError } from "@/lib/friendly-error";
+import { PageVisibilityControls } from "@/components/PageVisibilityControls";
+import { useTranslation } from "react-i18next";
 import { isRoleOwnerIdentity } from "@/lib/role-owner";
 
 export const Route = createFileRoute("/dashboard/permissions")({
@@ -39,6 +41,7 @@ type RoleDef = { key: string; label: string; description: string; builtin: boole
 type Account = { id: string; full_name: string | null };
 function PermissionsPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [roles, setRoles] = useState<RoleDef[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedRole, setSelectedRole] = useState("");
@@ -138,7 +141,7 @@ function PermissionsPage() {
     <PageHeader title="الأدوار والصلاحيات" />
     <div className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4" />صاحب المؤسسة · {roles.filter(r => r.builtin).length} أدوار أساسية · {roles.filter(r => !r.builtin).length} أدوار مخصصة</div>
     <Tabs defaultValue="roles">
-      <TabsList className="w-full"><TabsTrigger value="roles" className="flex-1">الأدوار</TabsTrigger><TabsTrigger value="accounts" className="flex-1">الحسابات</TabsTrigger><TabsTrigger value="limits" className="flex-1">الحدود</TabsTrigger></TabsList>
+      <TabsList className="h-auto w-full flex-wrap"><TabsTrigger value="roles" className="flex-1">الأدوار</TabsTrigger><TabsTrigger value="accounts" className="flex-1">الحسابات</TabsTrigger><TabsTrigger value="limits" className="flex-1">الحدود</TabsTrigger><TabsTrigger value="pages" className="flex-1">{t("pageRules.tab")}</TabsTrigger></TabsList>
       <TabsContent value="roles" className="space-y-6 pt-4">
         <section className="space-y-3 border-b border-border pb-6">
           <h2 className="font-semibold">دور جديد</h2>
@@ -165,6 +168,7 @@ function PermissionsPage() {
         </>}
       </TabsContent>
       <TabsContent value="limits" className="space-y-5 pt-4">{LIMIT_SETTINGS.map(s => <div key={s.key} className="flex flex-wrap items-end gap-3"><div className="flex-1 space-y-1"><Label htmlFor={s.key}>{s.label}</Label><p className="text-xs text-muted-foreground">{s.hint}</p></div><Input id={s.key} className="w-24" type="number" min={0} value={limits[s.key] ?? ""} onChange={e => setLimits(m => ({ ...m, [s.key]: e.target.value }))} /><Button disabled={busy} onClick={() => run(async () => { const value = Number(limits[s.key]); if (!Number.isInteger(value) || value < 0) throw new Error("أدخل عدداً صحيحاً غير سالب"); checked(await supabase.from("access_settings").upsert({ key: s.key, value, updated_by: user?.id })); })}><Save className="size-4" />حفظ</Button></div>)}</TabsContent>
+      <TabsContent value="pages" className="pt-4">{user && <PageVisibilityControls userId={user.id} roles={roles} accounts={accounts} />}</TabsContent>
     </Tabs>
   </div>;
 }

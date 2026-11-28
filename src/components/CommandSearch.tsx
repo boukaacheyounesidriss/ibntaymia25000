@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
-import { NAV_ITEMS } from "@/lib/nav-config";
+import { usePageVisibility } from "@/lib/use-page-visibility";
+import { NAV_ITEMS, canAccess } from "@/lib/nav-config";
 import { SIMPLE_MODE_PAGES, useSimpleMode } from "@/lib/simple-mode";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ export function CommandSearch() {
   const [q, setQ] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { roles, hasRole } = useAuth();
+  const { roles, hasRole, user } = useAuth();
   const isStaff = ["admin", "director", "supervisor", "teacher"].some((r) => hasRole(r as never));
 
   useEffect(() => {
@@ -50,10 +51,10 @@ export function CommandSearch() {
     queryFn: async () => (await supabase.from("classes").select("id, name").ilike("name", `%${term}%`).limit(6)).data ?? [],
   });
 
+  const visibility = usePageVisibility(user?.id, roles);
   const simple = useSimpleMode();
-  const pages = NAV_ITEMS.filter(
-    (it) => !it.roles || roles.includes("developer") || it.roles.some((r) => roles.includes(r)),
-  ).filter((it) => !simple || SIMPLE_MODE_PAGES.has(it.url));
+  const pages = NAV_ITEMS.filter((it) => canAccess(it.url, roles, user?.id) && !visibility.isHidden(it.url))
+    .filter((it) => !simple || SIMPLE_MODE_PAGES.has(it.url));
 
   const go = (to: string) => {
     setOpen(false);
@@ -72,7 +73,7 @@ export function CommandSearch() {
         <CommandInput placeholder="ابحث عن صفحة أو تلميذ أو قسم..." value={q} onValueChange={setQ} />
         <CommandList>
           <CommandEmpty>لا نتائج.</CommandEmpty>
-          {students.length > 0 && (
+          {students.length > 0 && !visibility.isHidden("/dashboard/students") && (
             <CommandGroup heading="التلاميذ">
               {students.map((s) => (
                 <CommandItem key={s.id} value={`student ${s.full_name} ${s.id}`} onSelect={() => go("/dashboard/students")}>
@@ -81,7 +82,7 @@ export function CommandSearch() {
               ))}
             </CommandGroup>
           )}
-          {classes.length > 0 && (
+          {classes.length > 0 && !visibility.isHidden("/dashboard/schedule") && (
             <CommandGroup heading="الأقسام">
               {classes.map((c) => (
                 <CommandItem key={c.id} value={`class ${c.name} ${c.id}`} onSelect={() => go("/dashboard/schedule")}>

@@ -30,7 +30,9 @@ export function onOutboxChange(cb: () => void): () => void {
   return () => { window.removeEventListener(EVT, cb); window.removeEventListener("storage", cb); };
 }
 export function queueAttendance(item: Omit<QueuedAttendance, "id" | "queued_at">) {
-  write([...readOutbox(), { ...item, id: crypto.randomUUID(), queued_at: new Date().toISOString() }]);
+  const queued = { ...item, id: crypto.randomUUID(), queued_at: new Date().toISOString() };
+  write([...readOutbox(), queued]);
+  return queued;
 }
 export function removeQueued(id: string) { write(readOutbox().filter((i) => i.id !== id)); }
 
@@ -41,24 +43,12 @@ export function isNetworkError(e: unknown): boolean {
   return /Failed to fetch|NetworkError|Load failed|network|fetch/i.test(m) && !(e as { code?: string })?.code;
 }
 
-/** Sends one queued item. Reuses an existing session of the same slot (saved earlier from this device). */
+/** One atomic request; the durable receipt makes a lost response safe to retry. */
 async function sendOne(item: QueuedAttendance): Promise<void> {
-  const s = item.session;
-  let sessionId: string | null = null;
-  const { data: created, error } = await supabase.from("attendance_sessions").insert(s as never).select("id").single();
-  if (error) {
-    if (error.code !== "23505" && !/overlap|تداخل|مسجل/.test(error.message)) throw error;
-    const { data: existing, error: e2 } = await supabase.from("attendance_sessions").select("id")
-      .eq("class_id", s.class_id).eq("session_date", s.session_date).eq("teacher_id", s.teacher_id)
-      .eq("group_scope", s.group_scope).match(s.period ? { period: s.period } : {}).maybeSingle();
-    if (e2 || !existing) throw new Error("حضور هذه الحصة سُجّل من جهاز آخر");
-    sessionId = existing.id;
-    const { count } = await supabase.from("attendance_records").select("id", { count: "exact", head: true }).eq("session_id", sessionId);
-    if ((count ?? 0) > 0) return; // already delivered earlier
-  } else sessionId = created.id;
-  const rows = item.marks.map((m) => ({ session_id: sessionId!, student_id: m.student_id, status: m.status }));
-  const { error: e3 } = await supabase.from("attendance_records").insert(rows);
-  if (e3) throw e3;
+  const { error } = await supabase.rpc("submit_teacher_attendance", {
+    _id: item.id, _session: item.session, _marks: item.marks,
+  });
+  if (error) throw error;
 }
 
 let running = false;

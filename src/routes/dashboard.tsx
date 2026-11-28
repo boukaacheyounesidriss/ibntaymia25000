@@ -5,6 +5,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/use-auth";
+import { usePageVisibility } from "@/lib/use-page-visibility";
+import { Link } from "@tanstack/react-router";
 import { canAccess, defaultLandingFor } from "@/lib/nav-config";
 import { WelcomeTour, useWelcomeTour } from "@/components/WelcomeTour";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,7 @@ function DashboardLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const tour = useWelcomeTour();
   const { t } = useTranslation();
+  const visibility = usePageVisibility(user?.id, roles);
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -78,6 +81,14 @@ function DashboardLayout() {
   }
 
   if (!canAccess(path, roles, user.id)) return null;
+  if (visibility.loading) return <div className="min-h-screen bg-background p-6">{t("pageRules.loading")}</div>;
+  if (visibility.isHidden(path)) return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <div className="space-y-4 text-center"><h1 className="text-xl font-semibold">{t("pageRules.unavailable")}</h1>
+        <Button asChild><Link to="/dashboard">{t("pageRules.home")}</Link></Button>
+      </div>
+    </div>
+  );
 
   return (
     <SidebarProvider>

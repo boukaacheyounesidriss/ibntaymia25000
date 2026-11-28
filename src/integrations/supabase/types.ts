@@ -2294,6 +2294,10 @@ export type Database = {
           since_date: string
         }[]
       }
+      submit_teacher_attendance: {
+        Args: { _id: string; _marks: Json; _session: Json }
+        Returns: string
+      }
       teacher_edit_attendance: {
         Args: { _changes: Json; _session: string }
         Returns: number

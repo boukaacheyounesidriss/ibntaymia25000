@@ -218,6 +218,13 @@
       "when": 1795764796183,
       "tag": "0030_site_maintenance_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1795857425564,
+      "tag": "0031_atomic_teacher_attendance_sync",
+      "breakpoints": true
     }
   ]
 }
